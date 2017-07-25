@@ -3,4 +3,17 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="main_background_color">#829083</color>
+
+    <color name="text_title_color">#f7ffce</color>
+
+    <color name="buses_button_color">#fcde6e</color>
+    <color name="second_button_color">#f07f5c</color>
+    <color name="third_button_color">#a6415b</color>
+    <color name="fourth_button_color">#563660</color>
+
+    <color name="buses_button_text_color">#df7455</color>
+    <color name="second_button_text_color">#b14f53</color>
+    <color name="third_button_text_color">#402344</color>
+    <color name="fourth_button_text_color">#211a34</color>
 </resources>
