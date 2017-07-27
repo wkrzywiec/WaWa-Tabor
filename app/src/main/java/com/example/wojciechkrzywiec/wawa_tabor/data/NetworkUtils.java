@@ -1,11 +1,14 @@
 package com.example.wojciechkrzywiec.wawa_tabor.data;
 
-import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Scanner;
 
 import static android.content.ContentValues.TAG;
 
@@ -28,12 +31,33 @@ public class NetworkUtils {
     private static final String RESOURCE_ID = "f2e5503e-927d-4ad3-9500-4ab9e55deb59";
     private static final String API_KEY = "89abea05-01e5-4726-8cfb-2fcc5e31c364";
 
-    public static URL getURL(Context context){
-        return getAllBusesURL();
+    public static URL getURL(int type, int line){
+        if (type == 1){
+            if(line == 0) return getAllBusesURL();
+            return null;
+        }
+        return null;
     }
 
-    public static String getRespondFromHttp(URL url) {
-        return null;
+    public static String getRespondFromHttp(URL url) throws IOException {
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        try {
+            InputStream in = urlConnection.getInputStream();
+
+            Scanner scanner = new Scanner(in);
+            scanner.useDelimiter("\\A");
+
+            boolean hasInput = scanner.hasNext();
+            String response = null;
+            if (hasInput) {
+                response = scanner.next();
+            }
+            scanner.close();
+            Log.v(TAG, "Respond from Http: " + response);
+            return response;
+        } finally {
+            urlConnection.disconnect();
+        }
     }
 
     private static URL getAllBusesURL(){
