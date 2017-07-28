@@ -16,6 +16,10 @@ public class TransportContract {
 
     public static final class TransportEntry implements BaseColumns {
 
+        public static final Uri TABLE_URI = BASE_CONTENT_URI.buildUpon()
+                .appendPath(PATH_TRANSPORT)
+                .build();
+
         public static final String TABLE_NAME = "transport";
 
         public static final String COLUMN_TIME = "time";

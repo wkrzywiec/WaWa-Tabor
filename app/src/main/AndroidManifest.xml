@@ -40,6 +40,11 @@
         <activity
             android:name=".BusesActivity"
             android:label="@string/title_activity_buses"></activity>
+
+        <provider
+            android:name=".data.TransportProvider"
+            android:authorities="com.example.wojciechkrzywiec.wawa_tabor"
+            android:exported="false"/>
     </application>
 
 </manifest>
