@@ -1,13 +1,17 @@
 package com.example.wojciechkrzywiec.wawa_tabor;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 
 
 import com.example.wojciechkrzywiec.wawa_tabor.data.NetworkUtils;
 import com.example.wojciechkrzywiec.wawa_tabor.data.OpenTransportJSONUtils;
+import com.example.wojciechkrzywiec.wawa_tabor.sync.DataSyncUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -33,45 +37,22 @@ public class BusesActivity extends FragmentActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        new FetchBusesPosition().execute("test");
+        //DataSyncUtils.initialize(this);
+
     }
 
-
-    class FetchBusesPosition extends AsyncTask<String, Void, String[]>{
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String[] doInBackground(String... params) {
-
-
-            URL apiUrl = NetworkUtils.getURL(1, 0);
-
-            try {
-                String jsonWeatherResponse = NetworkUtils.getRespondFromHttp(apiUrl);
-
-                OpenTransportJSONUtils.getTransportContentValuesFromJson(jsonWeatherResponse);
-                return new String[] {jsonWeatherResponse};
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String[] weatherData) {
-
-            if (weatherData != null) {
-                Log.v(TAG, "BusesActivity: " + weatherData[0]);
-
-            } else {
-                Log.v(TAG, "Brak danych ze strony!");
-            }
-        }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DataSyncUtils.initialize(this);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        DataSyncUtils.cancelScheduledJob();
+    }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -90,4 +71,6 @@ public class BusesActivity extends FragmentActivity implements OnMapReadyCallbac
         mMap.addMarker(new MarkerOptions().position(warsaw).title("Witaj w Warszawie!"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(warsaw));
     }
+
+
 }
