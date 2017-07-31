@@ -1,10 +1,12 @@
 package com.example.wojciechkrzywiec.wawa_tabor;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.example.wojciechkrzywiec.wawa_tabor.data.TransportContract;
 import com.example.wojciechkrzywiec.wawa_tabor.data.TransportDbHelper;
@@ -12,23 +14,33 @@ import com.example.wojciechkrzywiec.wawa_tabor.data.TransportDbHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Created by Wojtek Krzywiec on 28/07/2017.
  */
-
+@RunWith(AndroidJUnit4.class)
 public class TransportProviderTest {
 
     private final Context mContext = InstrumentationRegistry.getTargetContext();
 
-    /*
-    @Before
-    public void setUp(){
 
-    }*/
+    @Before
+    public void before(){
+        TransportDbHelper helper = new TransportDbHelper(InstrumentationRegistry.getTargetContext());
+        SQLiteDatabase database = helper.getWritableDatabase();
+
+        database.delete(
+                TransportContract.TransportEntry.TABLE_NAME,
+                null,
+                null
+        );
+
+        database.close();
+    }
 
     @Test
-    public void given_OneRowsInDatabase_When_QueryAllRows_Then_ReceiveNotNullCursor(){
+    public void given_OneRowInDatabase_When_QueryAllRows_Then_ReceiveNotNullCursor(){
 
         //Given
         TransportDbHelper dbHelper = new TransportDbHelper(mContext);
@@ -58,7 +70,25 @@ public class TransportProviderTest {
         Assert.assertNotNull("Cursor is null!",transportCursor);
 
         validateCursorValues(transportCursor, mockedContentValues[0], 1);
+
     }
+
+    @Test
+    public void given_EmptyDatabase_When_InsertMultipleRows_Then_CheckNumberOfRows(){
+
+        //Given
+        ContentResolver resolver = mContext.getContentResolver();
+
+        ContentValues[] mockedContentValues = mockTransportContentValues();
+
+        long numberOfRows = resolver.bulkInsert(
+                TransportContract.TransportEntry.TABLE_URI,
+                mockedContentValues
+        );
+
+        Assert.assertEquals("New data was not inserted!", mockedContentValues.length, numberOfRows);
+    }
+
 
     private void validateCursorValues(Cursor receivedCursor, ContentValues expectedValues, int index) {
 
@@ -94,6 +124,8 @@ public class TransportProviderTest {
                 Double.valueOf(receivedCursor.getDouble(receivedCursor.getColumnIndex(TransportContract.TransportEntry.COLUMN_LON)))
         );
     }
+
+
 
     private ContentValues[] mockTransportContentValues() {
 

@@ -154,7 +154,6 @@ public class TransportProvider extends ContentProvider {
         throw new RuntimeException("No need to implement this!");
     }
 
-    //http://developer.android.com/reference/android/content/ContentProvider.html#shutdown()
 
     @Override
     @TargetApi(11)
