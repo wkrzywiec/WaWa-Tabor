@@ -52,7 +52,7 @@
             android:name=".sync.DatabaseSyncIntentService"
             android:exported="false" />
 
-        <!-- This is the Service declaration used in conjunction with FirebaseJobDispatcher -->
+
         <service
             android:name=".sync.DatabaseSyncJobService"
             android:exported="false">

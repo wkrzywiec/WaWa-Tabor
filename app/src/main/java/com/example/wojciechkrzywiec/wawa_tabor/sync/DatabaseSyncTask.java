@@ -42,9 +42,6 @@ public class DatabaseSyncTask {
                         TransportContract.TransportEntry.TABLE_URI,
                         transportValues);
 
-
-                Toast infoToast = Toast.makeText(context, "Baza danych została zaktualizowana", Toast.LENGTH_LONG);
-                infoToast.show();
             }
 
         } catch (Exception e) {

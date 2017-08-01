@@ -13,6 +13,7 @@ import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
 
 /**
@@ -85,16 +86,18 @@ public class DataSyncUtils {
 
                 .setRecurring(true)
 
+                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+
                 .setTrigger(Trigger.executionWindow(
                         SYNC_INTERVAL_SECONDS,
                         SYNC_INTERVAL_SECONDS + SYNC_FLEXTIME_SECONDS))
 
-                .setReplaceCurrent(true)
+                .setReplaceCurrent(false)
 
                 .build();
 
-
-        dispatcher.schedule(databaseSyncJob);
+        dispatcher.mustSchedule(databaseSyncJob);
+        //dispatcher.schedule(databaseSyncJob);
 
 
     }

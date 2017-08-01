@@ -1,32 +1,33 @@
 package com.example.wojciechkrzywiec.wawa_tabor;
 
-import android.content.Context;
-import android.os.AsyncTask;
+
+import android.database.Cursor;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
-import android.view.View;
 
-
-import com.example.wojciechkrzywiec.wawa_tabor.data.NetworkUtils;
-import com.example.wojciechkrzywiec.wawa_tabor.data.OpenTransportJSONUtils;
+import com.example.wojciechkrzywiec.wawa_tabor.data.TransportContract;
 import com.example.wojciechkrzywiec.wawa_tabor.sync.DataSyncUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.net.URL;
 
 import static android.content.ContentValues.TAG;
 
-public class BusesActivity extends FragmentActivity implements OnMapReadyCallback {
+public class BusesActivity extends FragmentActivity implements OnMapReadyCallback,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private GoogleMap mMap;
 
+    private static final int ID_LOADER = 88;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,20 +37,20 @@ public class BusesActivity extends FragmentActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        //DataSyncUtils.initialize(this);
-
+        DataSyncUtils.initialize(this);
+        getSupportLoaderManager().initLoader(ID_LOADER, null, this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        DataSyncUtils.initialize(this);
+
+
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy() {
+        super.onDestroy();
         DataSyncUtils.cancelScheduledJob();
     }
 
@@ -62,14 +63,59 @@ public class BusesActivity extends FragmentActivity implements OnMapReadyCallbac
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        LatLngBounds warsaw = new LatLngBounds(new LatLng(52.048272, 20.78179951), new LatLng(52.4175467, 21.18040289));
 
-        // Add a marker in Sydney and move the camera
+        /* Add a marker in Sydney and move the camera
         LatLng warsaw = new LatLng(52.229676, 21.012229);
         mMap.addMarker(new MarkerOptions().position(warsaw).title("Witaj w Warszawie!"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(warsaw));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(warsaw));*/
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(warsaw.getCenter(), 10));
+
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
+
+        String selection = TransportContract.TransportEntry.COLUMN_LINE + " = 131";
+    switch (loaderId) {
+        case ID_LOADER:
+            return new CursorLoader(
+                    this,
+                    TransportContract.TransportEntry.TABLE_URI,
+                    null,
+                    selection,
+                    null,
+                    null);
+        default:
+            throw new RuntimeException("Loader Not Implemented: " + loaderId);
+    }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        data.moveToFirst();
+
+        Log.v(TAG,"Wszysttkich autobusów jest: " + String.valueOf(data.getCount()));
+
+        do {
+            double lat = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LAT));
+            double lon = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LON));
+            String line = data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LINE));
+            LatLng position = new LatLng(lat, lon);
+
+            mMap.addMarker(new MarkerOptions().position(position).title(line));
+        } while (data.moveToNext());
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mMap.clear();
     }
 
 
