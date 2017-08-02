@@ -1,0 +1,125 @@
+[
+  {
+    "featureType": "administrative.locality",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "hue": "#ffffff"
+      },
+      {
+        "lightness": 100
+      },
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "landscape",
+    "elementType": "all",
+    "stylers": [
+      {
+        "hue": "#FFFFFF"
+      },
+      {
+        "saturation": -100
+      },
+      {
+        "lightness": 100
+      },
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.attraction",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "hue": "#ffffff"
+      },
+      {
+        "saturation": -100
+      },
+      {
+        "lightness": 100
+      },
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.government",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "hue": "#ffffff"
+      },
+      {
+        "saturation": -100
+      },
+      {
+        "lightness": 100
+      },
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "hue": "#ffffff"
+      },
+      {
+        "saturation": -100
+      },
+      {
+        "lightness": 100
+      },
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "all",
+    "stylers": [
+      {
+        "hue": "#333333"
+      },
+      {
+        "saturation": -100
+      },
+      {
+        "lightness": -69
+      },
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "all",
+    "stylers": [
+      {
+        "hue": "#000000"
+      },
+      {
+        "saturation": -100
+      },
+      {
+        "lightness": -100
+      },
+      {
+        "visibility": "simplified"
+      }
+    ]
+  }
+]
