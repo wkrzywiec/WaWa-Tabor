@@ -1,13 +1,17 @@
 package com.example.wojciechkrzywiec.wawa_tabor;
 
 
+
 import android.database.Cursor;
-import android.support.v4.app.FragmentActivity;
+
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.example.wojciechkrzywiec.wawa_tabor.data.TransportContract;
 import com.example.wojciechkrzywiec.wawa_tabor.sync.DataSyncUtils;
@@ -15,6 +19,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -22,7 +27,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import static android.content.ContentValues.TAG;
 
-public class BusesActivity extends FragmentActivity implements OnMapReadyCallback,
+public class BusesActivity extends AppCompatActivity implements OnMapReadyCallback,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private GoogleMap mMap;
@@ -33,19 +38,14 @@ public class BusesActivity extends FragmentActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buses);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         DataSyncUtils.initialize(this);
         getSupportLoaderManager().initLoader(ID_LOADER, null, this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-
     }
 
     @Override
@@ -68,12 +68,11 @@ public class BusesActivity extends FragmentActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         LatLngBounds warsaw = new LatLngBounds(new LatLng(52.048272, 20.78179951), new LatLng(52.4175467, 21.18040289));
-
-        /* Add a marker in Sydney and move the camera
-        LatLng warsaw = new LatLng(52.229676, 21.012229);
-        mMap.addMarker(new MarkerOptions().position(warsaw).title("Witaj w Warszawie!"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(warsaw));*/
+        mMap.setBuildingsEnabled(false);
+        UiSettings uiSettings = mMap.getUiSettings();
+        uiSettings.setZoomControlsEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(warsaw.getCenter(), 10));
+
 
     }
 
@@ -97,7 +96,7 @@ public class BusesActivity extends FragmentActivity implements OnMapReadyCallbac
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        mMap.clear();
         data.moveToFirst();
 
         Log.v(TAG,"Wszysttkich autobusów jest: " + String.valueOf(data.getCount()));
@@ -105,10 +104,13 @@ public class BusesActivity extends FragmentActivity implements OnMapReadyCallbac
         do {
             double lat = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LAT));
             double lon = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LON));
-            String line = data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LINE));
+            String line = "Linia: " +
+                    data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LINE));
+            String busDetails = "Brygada: " + data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_BRIGADE))
+                    + " Czas: " + data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_TIME));
             LatLng position = new LatLng(lat, lon);
 
-            mMap.addMarker(new MarkerOptions().position(position).title(line));
+            mMap.addMarker(new MarkerOptions().position(position).title(line).snippet(busDetails));
         } while (data.moveToNext());
 
     }
@@ -118,5 +120,18 @@ public class BusesActivity extends FragmentActivity implements OnMapReadyCallbac
         mMap.clear();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
+

@@ -2,10 +2,13 @@
     <string name="app_name">WaWa Tabor</string>
 
     <string name="button_font_size">20sp</string>
-    <string name="buses_button_text">Znajdź wszystkie autobusy</string>
-    <string name="second_button_text">Znajdź wszystkie tramwaje</string>
-    <string name="third_button_text">Wyszukaj po lini</string>
-    <string name="fourth_button_text">Sprawdź rozkład jazdy</string>
+    <string name="buses_button_text">Znajdź autobusy danej lini</string>
+    <string name="second_button_text">Pobliskie autobusy</string>
+    <string name="third_button_text">Znajdź tramwaje danej lini</string>
+    <string name="fourth_button_text">Pobliskie tramwaje</string>
     <string name="buses_title">Autobusy na trasie</string>
-    <string name="title_activity_buses">Map</string>
+
+    <string name="title_activity_buses">Autobusy danej linii</string>
+    <string name="find_buses_button_text">Szukaj</string>
+    <string name="find_buses_hint_text">Linia autobusowa</string>
 </resources>
