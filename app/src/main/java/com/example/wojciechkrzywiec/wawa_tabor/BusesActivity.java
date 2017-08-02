@@ -53,6 +53,7 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
     protected void onDestroy() {
         super.onDestroy();
         DataSyncUtils.cancelScheduledJob();
+
     }
 
     /**
@@ -82,7 +83,7 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
 
-        String selection = TransportContract.TransportEntry.COLUMN_LINE + " = 131";
+        String selection = TransportContract.TransportEntry.COLUMN_LINE + " = 522";
     switch (loaderId) {
         case ID_LOADER:
             return new CursorLoader(

@@ -16,4 +16,7 @@
     <color name="second_button_text_color">#b14f53</color>
     <color name="third_button_text_color">#402344</color>
     <color name="fourth_button_text_color">#211a34</color>
+
+    <color name="hurry_transport_color">#ef4c46</color>
+    <color name="night_transport_color">#2a0430</color>
 </resources>
