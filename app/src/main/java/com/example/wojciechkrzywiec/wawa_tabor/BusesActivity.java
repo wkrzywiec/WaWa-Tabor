@@ -46,6 +46,7 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
 
         DataSyncUtils.initialize(this);
         getSupportLoaderManager().initLoader(ID_LOADER, null, this);
+
     }
 
     @Override
@@ -67,8 +68,10 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.clear();
         LatLngBounds warsaw = new LatLngBounds(new LatLng(52.048272, 20.78179951), new LatLng(52.4175467, 21.18040289));
         mMap.setBuildingsEnabled(false);
+        mMap.setInfoWindowAdapter(new WaWaTaborInfoWindow(this));
         UiSettings uiSettings = mMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(warsaw.getCenter(), 10));
@@ -104,10 +107,10 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
         do {
             double lat = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LAT));
             double lon = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LON));
-            String line = "Linia: " +
+            String line =
                     data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LINE));
-            String busDetails = "Brygada: " + data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_BRIGADE))
-                    + " Czas: " + data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_TIME));
+            String busDetails =  data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_BRIGADE))
+                    + "," + data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_TIME));
             LatLng position = new LatLng(lat, lon);
 
             mMap.addMarker(new MarkerOptions().position(position).title(line).snippet(busDetails));
