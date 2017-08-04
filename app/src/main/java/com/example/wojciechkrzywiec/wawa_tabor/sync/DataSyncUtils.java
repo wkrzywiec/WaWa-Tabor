@@ -86,8 +86,6 @@ public class DataSyncUtils {
 
                 .setRecurring(true)
 
-                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
-
                 .setTrigger(Trigger.executionWindow(
                         SYNC_INTERVAL_SECONDS,
                         SYNC_INTERVAL_SECONDS + SYNC_FLEXTIME_SECONDS))
@@ -96,8 +94,8 @@ public class DataSyncUtils {
 
                 .build();
 
-        dispatcher.mustSchedule(databaseSyncJob);
-        //dispatcher.schedule(databaseSyncJob);
+        //dispatcher.mustSchedule(databaseSyncJob);
+        dispatcher.schedule(databaseSyncJob);
 
 
     }
@@ -112,4 +110,5 @@ public class DataSyncUtils {
     public static void cancelScheduledJob(){
         dispatcher.cancel(DATABASE_SYNC_TAG);
     }
+
 }

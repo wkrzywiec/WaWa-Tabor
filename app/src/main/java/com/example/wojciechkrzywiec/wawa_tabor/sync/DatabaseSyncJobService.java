@@ -2,6 +2,8 @@ package com.example.wojciechkrzywiec.wawa_tabor.sync;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
@@ -12,37 +14,43 @@ import com.firebase.jobdispatcher.JobService;
 
 public class DatabaseSyncJobService extends JobService {
 
-    private AsyncTask<Void, Void, Void> mFetchTransportTask;
+    AsyncTask<Void, Void, Boolean> mFetchTransportTask;
 
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
 
-        mFetchTransportTask = new AsyncTask<Void, Void, Void>(){
+        mFetchTransportTask = new AsyncTask<Void, Void, Boolean>() {
             @Override
-            protected Void doInBackground(Void... voids) {
+            protected Boolean doInBackground(Void... voids) {
+
                 Context context = getApplicationContext();
                 DatabaseSyncTask.syncDatabase(context);
                 jobFinished(jobParameters, false);
-//TODO Add Intent that will be sent to LocalBroadcastManagera & update Activities
-                return null;
+                return true;
             }
-
             @Override
-            protected void onPostExecute(Void aVoid) {
-                jobFinished(jobParameters, false);
+            protected void onPostExecute(Boolean success) {
+                jobFinished(jobParameters, !success);
             }
         };
 
-        mFetchTransportTask.execute();
+        if (Build.VERSION.SDK_INT >= 11) {
+            mFetchTransportTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            mFetchTransportTask.execute();
+        }
+
         return true;
     }
 
 
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
+        Log.i("Wojciechkrzywiec", "servicejob sie skonczyl");
         if (mFetchTransportTask != null) {
             mFetchTransportTask.cancel(true);
         }
+        jobFinished(jobParameters, true);
         return true;
     }
 

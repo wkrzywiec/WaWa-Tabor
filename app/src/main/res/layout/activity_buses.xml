@@ -9,6 +9,7 @@
         android:weightSum="1">
 
         <EditText
+            android:id="@+id/edit_query"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1.00"
@@ -18,7 +19,8 @@
             android:id="@+id/btnFindBus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/find_buses_button_text"/>
+            android:text="@string/find_buses_button_text"
+            android:onClick="setDisplayedLine"/>
     </LinearLayout>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"

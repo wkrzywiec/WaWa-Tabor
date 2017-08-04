@@ -5,6 +5,7 @@ package com.example.wojciechkrzywiec.wawa_tabor;
 import android.database.Cursor;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
@@ -12,6 +13,9 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.wojciechkrzywiec.wawa_tabor.data.TransportContract;
 import com.example.wojciechkrzywiec.wawa_tabor.sync.DataSyncUtils;
@@ -32,22 +36,25 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private GoogleMap mMap;
+    private String mDisplayedLine = "131";
 
     private static final int ID_LOADER = 88;
+
+    private EditText mLineTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buses);
 
+        mLineTextView = (EditText) findViewById(R.id.edit_query);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         DataSyncUtils.initialize(this);
-        getSupportLoaderManager().initLoader(ID_LOADER, null, this);
-
     }
 
     @Override
@@ -81,10 +88,38 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
+    public void setDisplayedLine(View view){
+        mDisplayedLine = mLineTextView.getText().toString();
+
+        if(checkIfBusIsAvailable()) {
+            getSupportLoaderManager().restartLoader(ID_LOADER, null, this);
+        } else {
+            Toast toast = Toast.makeText(this, "Nie ma takiego autobusu!", Toast.LENGTH_LONG);
+            toast.show();
+        }
+
+    }
+
+    private boolean checkIfBusIsAvailable() {
+        Cursor cursor = getContentResolver().query(
+                TransportContract.TransportEntry.TABLE_URI,
+                null,
+                TransportContract.TransportEntry.COLUMN_LINE + "=" + mDisplayedLine,
+                null,
+                null
+        );
+
+        if (cursor == null && cursor.getCount() == 0){
+            return false;
+        }
+        return true;
+
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
 
-        String selection = TransportContract.TransportEntry.COLUMN_LINE + " = 522";
+        String selection = TransportContract.TransportEntry.COLUMN_LINE + "=" + mDisplayedLine;
     switch (loaderId) {
         case ID_LOADER:
             return new CursorLoader(
@@ -125,6 +160,7 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
         mMap.clear();
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -138,5 +174,7 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
 
