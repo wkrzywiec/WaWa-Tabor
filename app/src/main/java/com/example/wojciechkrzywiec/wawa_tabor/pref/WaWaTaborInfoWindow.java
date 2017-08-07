@@ -1,4 +1,4 @@
-package com.example.wojciechkrzywiec.wawa_tabor;
+package com.example.wojciechkrzywiec.wawa_tabor.pref;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.wojciechkrzywiec.wawa_tabor.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 

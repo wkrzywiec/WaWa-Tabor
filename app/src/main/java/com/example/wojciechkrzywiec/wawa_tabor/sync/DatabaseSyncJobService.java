@@ -34,11 +34,7 @@ public class DatabaseSyncJobService extends JobService {
             }
         };
 
-        if (Build.VERSION.SDK_INT >= 11) {
-            mFetchTransportTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
             mFetchTransportTask.execute();
-        }
 
         return true;
     }

@@ -40,6 +40,15 @@
                 android:value="com.example.wojciechkrzywiec.wawa_tabor.MainActivity" />
         </activity>
 
+        <activity
+            android:name=".SettingsActivity"
+            android:label="Opcje"
+            android:parentActivityName=".BusesActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".BusesActivity" />
+        </activity>
+
         <provider
             android:name=".data.TransportProvider"
             android:authorities="com.example.wojciechkrzywiec.wawa_tabor"

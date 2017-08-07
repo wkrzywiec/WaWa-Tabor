@@ -2,22 +2,27 @@ package com.example.wojciechkrzywiec.wawa_tabor;
 
 
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 
 import android.os.Bundle;
-import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.wojciechkrzywiec.wawa_tabor.data.TransportContract;
+import com.example.wojciechkrzywiec.wawa_tabor.pref.WaWaTaborInfoWindow;
 import com.example.wojciechkrzywiec.wawa_tabor.sync.DataSyncUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,7 +38,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import static android.content.ContentValues.TAG;
 
 public class BusesActivity extends AppCompatActivity implements OnMapReadyCallback,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>{
 
     private GoogleMap mMap;
     private String mDisplayedLine = "131";
@@ -54,7 +59,22 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
         DataSyncUtils.initialize(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
     }
 
     @Override
@@ -62,25 +82,17 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
         super.onDestroy();
         DataSyncUtils.cancelScheduledJob();
 
+
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         LatLngBounds warsaw = new LatLngBounds(new LatLng(52.048272, 20.78179951), new LatLng(52.4175467, 21.18040289));
         mMap.setBuildingsEnabled(false);
-        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_default));
         mMap.setInfoWindowAdapter(new WaWaTaborInfoWindow(this));
+        setMapStyle();
         UiSettings uiSettings = mMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(warsaw.getCenter(), 10));
@@ -93,11 +105,21 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
 
         if(checkIfBusIsAvailable()) {
             getSupportLoaderManager().restartLoader(ID_LOADER, null, this);
+
         } else {
             Toast toast = Toast.makeText(this, "Nie ma takiego autobusu!", Toast.LENGTH_LONG);
             toast.show();
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+
+        inflater.inflate(R.menu.settings_menu, menu);
+        return true;
     }
 
     private boolean checkIfBusIsAvailable() {
@@ -112,7 +134,41 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
         if (cursor == null && cursor.getCount() == 0){
             return false;
         }
+
         return true;
+
+    }
+
+    private void setMapStyle(){
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String key = getResources().getString(R.string.map_style_key);
+        String defaultValue = getResources().getString(R.string.map_style_value_default);
+
+        String userMapStyle = sharedPref.getString(key, defaultValue);
+
+        if (userMapStyle.equals(getResources().getString(R.string.map_style_value_black_and_white))){
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_black_and_white));
+
+        } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_red_alert))){
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_red_alert));
+
+        } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_retro))) {
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_retro));
+
+        } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_night))) {
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_night));
+
+        } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_greyscale))) {
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_greyscale));
+
+        } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_toned))) {
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_toned));
+
+        } else {
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_default));
+        }
 
     }
 
@@ -170,11 +226,14 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
 
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
+            case R.id.action_settings:
+                Intent startSettingsActivity = new Intent(this, SettingsActivity.class);
+                startActivity(startSettingsActivity);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
 
 }
 
