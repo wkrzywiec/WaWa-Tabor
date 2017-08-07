@@ -2,6 +2,7 @@ package com.example.wojciechkrzywiec.wawa_tabor;
 
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -18,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -66,22 +68,9 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         DataSyncUtils.cancelScheduledJob();
-
 
     }
 
@@ -111,6 +100,10 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
             toast.show();
         }
 
+
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
     }
 
     @Override
@@ -131,7 +124,7 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
                 null
         );
 
-        if (cursor == null && cursor.getCount() == 0){
+        if (cursor == null || cursor.getCount() <= 0){
             return false;
         }
 
