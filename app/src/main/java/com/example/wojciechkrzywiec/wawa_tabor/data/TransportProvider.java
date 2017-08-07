@@ -98,6 +98,7 @@ public class TransportProvider extends ContentProvider {
             }
 
             default:
+
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 

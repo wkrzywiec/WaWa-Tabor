@@ -43,7 +43,7 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
         LoaderManager.LoaderCallbacks<Cursor>{
 
     private GoogleMap mMap;
-    private String mDisplayedLine = "131";
+    private String mDisplayedLine;
 
     private static final int ID_LOADER = 88;
 
@@ -116,10 +116,11 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     private boolean checkIfBusIsAvailable() {
+
         Cursor cursor = getContentResolver().query(
                 TransportContract.TransportEntry.TABLE_URI,
                 null,
-                TransportContract.TransportEntry.COLUMN_LINE + "=" + mDisplayedLine,
+                TransportContract.TransportEntry.COLUMN_LINE + " = " + "'" + mDisplayedLine + "'",
                 null,
                 null
         );
