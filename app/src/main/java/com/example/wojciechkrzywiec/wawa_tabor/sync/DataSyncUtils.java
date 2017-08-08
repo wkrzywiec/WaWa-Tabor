@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.example.wojciechkrzywiec.wawa_tabor.R;
 import com.example.wojciechkrzywiec.wawa_tabor.data.TransportContract;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.Driver;
@@ -30,11 +32,17 @@ public class DataSyncUtils {
 
     private static Driver driver;
     private static FirebaseJobDispatcher dispatcher;
+    private static Bundle extras;
+    private static int lineType;
 
-    synchronized public static void initialize(@NonNull final Context context) {
+    synchronized public static void initialize(@NonNull final Context context, int lineId) {
 
         if (sInitialized) return;
         sInitialized = true;
+
+        lineType = lineId;
+        extras = new Bundle();
+        extras.putInt(context.getString(R.string.line_type), lineType);
 
         scheduleJobDispatcher(context);
 
@@ -92,9 +100,10 @@ public class DataSyncUtils {
 
                 .setReplaceCurrent(false)
 
+                .setExtras(extras)
+
                 .build();
 
-        //dispatcher.mustSchedule(databaseSyncJob);
         dispatcher.schedule(databaseSyncJob);
 
 
@@ -103,6 +112,7 @@ public class DataSyncUtils {
     public static void startImmediateSync(@NonNull final Context context) {
 
         Intent intentToSyncDatabase = new Intent(context, DatabaseSyncIntentService.class);
+        intentToSyncDatabase.putExtra(context.getString(R.string.line_type), lineType);
         context.startService(intentToSyncDatabase);
 
     }

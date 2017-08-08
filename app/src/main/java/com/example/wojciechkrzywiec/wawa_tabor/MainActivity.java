@@ -10,6 +10,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private Button mBusesButton;
+    private int busId = 1;
+    private int tramId = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +23,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void openBusesActivity(View v){
-        Intent busesActivityIntent = new Intent (MainActivity.this, BusesActivity.class);
-        startActivity(busesActivityIntent);
+        Intent linesActivityIntent = new Intent (MainActivity.this, LinesActivity.class);
+        linesActivityIntent.putExtra(getString(R.string.line_type), busId);
+        startActivity(linesActivityIntent);
+    }
+
+    public void openTramsActivity(View v){
+        Intent linesActivityIntent = new Intent (MainActivity.this, LinesActivity.class);
+        linesActivityIntent.putExtra(getString(R.string.line_type), tramId);
+        startActivity(linesActivityIntent);
     }
 }

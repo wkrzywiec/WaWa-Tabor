@@ -17,11 +17,11 @@ import java.net.URL;
 
 public class DatabaseSyncTask {
 
-    synchronized public static void syncDatabase(Context context) {
+    synchronized public static void syncDatabase(Context context, int lineType) {
 
         try {
 
-            URL requestedUrl = NetworkUtils.getURL(1, 0);
+            URL requestedUrl = NetworkUtils.getURL(lineType, 0);
 
             String jsonResponse = NetworkUtils.getRespondFromHttp(requestedUrl);
 

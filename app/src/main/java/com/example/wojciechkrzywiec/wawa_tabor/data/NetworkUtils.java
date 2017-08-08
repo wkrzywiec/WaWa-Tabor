@@ -35,8 +35,11 @@ public class NetworkUtils {
         if (type == 1){
             if(line == 0) return getAllBusesURL();
             return null;
+        } else {
+            if(line == 0) return getAllTramsURL();
+            return null;
         }
-        return null;
+
     }
 
     public static String getRespondFromHttp(URL url) throws IOException {
@@ -76,5 +79,22 @@ public class NetworkUtils {
             return null;
         }
 
+    }
+
+    public static URL getAllTramsURL() {
+        Uri tramsQueryUri = Uri.parse(API_WEBSITE_URL).buildUpon()
+                .appendQueryParameter(RESOURCE_ID_PARAM, RESOURCE_ID)
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .appendQueryParameter(TYPE_PARAM, Integer.toString(2))
+                .build();
+
+        try {
+            URL tramsURL = new URL(tramsQueryUri.toString());
+            Log.v(TAG, "Trams URL: " + tramsURL);
+            return tramsURL;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

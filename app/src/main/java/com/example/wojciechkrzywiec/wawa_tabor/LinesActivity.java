@@ -39,13 +39,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import static android.content.ContentValues.TAG;
 
-public class BusesActivity extends AppCompatActivity implements OnMapReadyCallback,
+public class LinesActivity extends AppCompatActivity implements OnMapReadyCallback,
         LoaderManager.LoaderCallbacks<Cursor>{
 
     private GoogleMap mMap;
     private String mDisplayedLine;
 
     private static final int ID_LOADER = 88;
+    private int lineType;
 
     private EditText mLineTextView;
 
@@ -53,7 +54,13 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_buses);
+
+        lineType = getIntent().getIntExtra(getString(R.string.line_type),1);
+        if (lineType == 1){
+            setContentView(R.layout.activity_buses);
+        } else{
+            setContentView(R.layout.activity_trams);
+        }
 
         mLineTextView = (EditText) findViewById(R.id.edit_query);
 
@@ -64,7 +71,8 @@ public class BusesActivity extends AppCompatActivity implements OnMapReadyCallba
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        DataSyncUtils.initialize(this);
+
+        DataSyncUtils.initialize(this, lineType);
     }
 
     @Override

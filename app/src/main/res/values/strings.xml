@@ -12,6 +12,10 @@
     <string name="find_buses_button_text">Szukaj</string>
     <string name="find_buses_hint_text">Linia autobusowa</string>
 
+    <string name="title_activity_trams">Tramwaje danej linii</string>
+    <string name="find_trams_button_text">Szukaj</string>
+    <string name="find_trams_hint_text">Linia autobusowa</string>
+
     <string name="map_style_key">MAP_STYLE</string>
     <string name="map_style_title">Style mapy</string>
 
@@ -30,5 +34,7 @@
     <string name="map_style_value_night">map_style_night.json</string>
     <string name="map_style_value_greyscale">map_style_greyscale.json</string>
     <string name="map_style_value_toned">map_style_toned.json</string>
+
+    <string name="line_type">line_type</string>
 
 </resources>

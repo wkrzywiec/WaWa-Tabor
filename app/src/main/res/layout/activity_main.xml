@@ -43,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@color/third_button_color"
+        android:onClick="openTramsActivity"
         android:textSize="@dimen/button_text_size"
         android:textColor="@color/third_button_text_color"
         android:text="@string/third_button_text"/>

@@ -32,7 +32,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".BusesActivity"
+            android:name=".LinesActivity"
             android:label="@string/title_activity_buses"
             android:parentActivityName="com.example.wojciechkrzywiec.wawa_tabor.MainActivity">
             <meta-data
@@ -43,10 +43,10 @@
         <activity
             android:name=".SettingsActivity"
             android:label="Opcje"
-            android:parentActivityName=".BusesActivity">
+            android:parentActivityName=".LinesActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".BusesActivity" />
+                android:value=".LinesActivity" />
         </activity>
 
         <provider

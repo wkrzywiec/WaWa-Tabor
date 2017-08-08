@@ -3,8 +3,10 @@ package com.example.wojciechkrzywiec.wawa_tabor.sync;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
+import com.example.wojciechkrzywiec.wawa_tabor.R;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 
@@ -16,15 +18,20 @@ public class DatabaseSyncJobService extends JobService {
 
     AsyncTask<Void, Void, Boolean> mFetchTransportTask;
 
+    private int lineType;
+
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
+
+        Bundle extras = jobParameters.getExtras();
+        lineType = extras.getInt(getApplicationContext().getString(R.string.line_type));
 
         mFetchTransportTask = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... voids) {
 
                 Context context = getApplicationContext();
-                DatabaseSyncTask.syncDatabase(context);
+                DatabaseSyncTask.syncDatabase(context, lineType);
                 jobFinished(jobParameters, false);
                 return true;
             }
