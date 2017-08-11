@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.wojciechkrzywiec.wawa_tabor.R;
 import com.example.wojciechkrzywiec.wawa_tabor.data.TransportContract;
@@ -33,16 +34,16 @@ public class DataSyncUtils {
     private static Driver driver;
     private static FirebaseJobDispatcher dispatcher;
     private static Bundle extras;
-    private static int lineType;
+    private static int sLineType;
+    private static String sLineNumber;
 
-    synchronized public static void initialize(@NonNull final Context context, int lineId) {
+    synchronized public static void initialize(@NonNull final Context context, int lineId, String lineNumber) {
 
-        if (sInitialized) return;
-        sInitialized = true;
-
-        lineType = lineId;
+        sLineType = lineId;
+        sLineNumber = lineNumber;
         extras = new Bundle();
-        extras.putInt(context.getString(R.string.line_type), lineType);
+        extras.putInt(context.getString(R.string.line_type), sLineType);
+        extras.putString(context.getString(R.string.line_number), sLineNumber);
 
         scheduleJobDispatcher(context);
 
@@ -63,7 +64,7 @@ public class DataSyncUtils {
                         null);
 
 
-                if (null == cursor || cursor.getCount() == 0) {
+                if (cursor == null || cursor.getCount() == 0) {
                     startImmediateSync(context);
                 }
 
@@ -72,6 +73,7 @@ public class DataSyncUtils {
         });
 
         checkForEmpty.start();
+
 
     }
 
@@ -98,7 +100,7 @@ public class DataSyncUtils {
                         SYNC_INTERVAL_SECONDS,
                         SYNC_INTERVAL_SECONDS + SYNC_FLEXTIME_SECONDS))
 
-                .setReplaceCurrent(false)
+                .setReplaceCurrent(true)
 
                 .setExtras(extras)
 
@@ -106,19 +108,20 @@ public class DataSyncUtils {
 
         dispatcher.schedule(databaseSyncJob);
 
-
+        Log.v("wojciechkrzywiec", "Job has started for line: " + sLineNumber);
     }
 
     public static void startImmediateSync(@NonNull final Context context) {
 
         Intent intentToSyncDatabase = new Intent(context, DatabaseSyncIntentService.class);
-        intentToSyncDatabase.putExtra(context.getString(R.string.line_type), lineType);
+        intentToSyncDatabase.putExtra(context.getString(R.string.line_type), sLineType);
+        intentToSyncDatabase.putExtra(context.getString(R.string.line_number), sLineNumber);
         context.startService(intentToSyncDatabase);
 
     }
 
-    public static void cancelScheduledJob(){
-        dispatcher.cancel(DATABASE_SYNC_TAG);
+    public static int cancelScheduledJob(){
+        return dispatcher.cancel(DATABASE_SYNC_TAG);
     }
 
 }

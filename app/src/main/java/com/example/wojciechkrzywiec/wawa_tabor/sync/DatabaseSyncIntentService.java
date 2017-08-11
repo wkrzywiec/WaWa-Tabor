@@ -19,6 +19,7 @@ public class DatabaseSyncIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
         int lineType = intent.getIntExtra(getApplicationContext().getString(R.string.line_type), 1);
-        DatabaseSyncTask.syncDatabase(this, lineType);
+        String lineNumber = intent.getStringExtra(getApplicationContext().getString(R.string.line_number));
+        DatabaseSyncTask.syncDatabase(this, lineType, lineNumber);
     }
 }

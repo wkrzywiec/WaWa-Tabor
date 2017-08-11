@@ -36,5 +36,6 @@
     <string name="map_style_value_toned">map_style_toned.json</string>
 
     <string name="line_type">line_type</string>
+    <string name="line_number">line_number</string>
 
 </resources>

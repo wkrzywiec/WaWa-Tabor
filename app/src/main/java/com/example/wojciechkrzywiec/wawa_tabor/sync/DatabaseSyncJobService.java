@@ -18,20 +18,22 @@ public class DatabaseSyncJobService extends JobService {
 
     AsyncTask<Void, Void, Boolean> mFetchTransportTask;
 
-    private int lineType;
+    private int mLineType;
+    private String mLineNumber;
 
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
 
         Bundle extras = jobParameters.getExtras();
-        lineType = extras.getInt(getApplicationContext().getString(R.string.line_type));
+        mLineType = extras.getInt(getApplicationContext().getString(R.string.line_type));
+        mLineNumber = extras.getString(getApplicationContext().getString(R.string.line_number));
 
         mFetchTransportTask = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... voids) {
 
                 Context context = getApplicationContext();
-                DatabaseSyncTask.syncDatabase(context, lineType);
+                DatabaseSyncTask.syncDatabase(context, mLineType, mLineNumber);
                 jobFinished(jobParameters, false);
                 return true;
             }
@@ -41,7 +43,7 @@ public class DatabaseSyncJobService extends JobService {
             }
         };
 
-            mFetchTransportTask.execute();
+        mFetchTransportTask.execute();
 
         return true;
     }
@@ -53,8 +55,8 @@ public class DatabaseSyncJobService extends JobService {
         if (mFetchTransportTask != null) {
             mFetchTransportTask.cancel(true);
         }
-        jobFinished(jobParameters, true);
-        return true;
+        jobFinished(jobParameters, false);
+        return false;
     }
 
 }

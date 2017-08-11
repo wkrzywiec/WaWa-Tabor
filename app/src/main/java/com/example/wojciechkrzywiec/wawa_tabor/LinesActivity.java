@@ -47,6 +47,7 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
 
     private static final int ID_LOADER = 88;
     private int lineType;
+    private boolean isDataSyncStarted = false;
 
     private EditText mLineTextView;
 
@@ -72,14 +73,25 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
 
-        DataSyncUtils.initialize(this, lineType);
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        DataSyncUtils.cancelScheduledJob();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DataSyncUtils.cancelScheduledJob();
 
+        getContentResolver().delete(
+                TransportContract.TransportEntry.TABLE_URI,
+                null,
+                null
+        );
     }
 
 
@@ -100,14 +112,14 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
     public void setDisplayedLine(View view){
         mDisplayedLine = mLineTextView.getText().toString();
 
-        if(checkIfBusIsAvailable()) {
-            getSupportLoaderManager().restartLoader(ID_LOADER, null, this);
-
-        } else {
-            Toast toast = Toast.makeText(this, "Nie ma takiego autobusu!", Toast.LENGTH_LONG);
-            toast.show();
+        if(isDataSyncStarted){
+            Log.v(TAG, "Job has finished? " + String.valueOf(DataSyncUtils.cancelScheduledJob()));
         }
 
+        isDataSyncStarted = true;
+        DataSyncUtils.initialize(this, lineType, mDisplayedLine);
+
+        getSupportLoaderManager().restartLoader(ID_LOADER, null, this);
 
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -134,9 +146,10 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
         );
 
         if (cursor == null || cursor.getCount() <= 0){
+            cursor.close();
             return false;
         }
-
+        cursor.close();
         return true;
 
     }
@@ -194,22 +207,26 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mMap.clear();
-        data.moveToFirst();
 
-        Log.v(TAG,"Wszysttkich autobusów jest: " + String.valueOf(data.getCount()));
+        if (data.getCount() != 0){
+            mMap.clear();
+            data.moveToFirst();
 
-        do {
-            double lat = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LAT));
-            double lon = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LON));
-            String line =
-                    data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LINE));
-            String busDetails =  data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_BRIGADE))
-                    + "," + data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_TIME));
-            LatLng position = new LatLng(lat, lon);
+            Log.v(TAG,"Wszysttkich autobusów jest: " + String.valueOf(data.getCount()));
 
-            mMap.addMarker(new MarkerOptions().position(position).title(line).snippet(busDetails));
-        } while (data.moveToNext());
+            do {
+                double lat = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LAT));
+                double lon = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LON));
+                String line =
+                        data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LINE));
+                String busDetails =  data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_BRIGADE))
+                        + "," + data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_TIME));
+                LatLng position = new LatLng(lat, lon);
+
+                mMap.addMarker(new MarkerOptions().position(position).title(line).snippet(busDetails));
+            } while (data.moveToNext());
+        }
+
 
     }
 

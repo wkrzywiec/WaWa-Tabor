@@ -31,14 +31,14 @@ public class NetworkUtils {
     private static final String RESOURCE_ID = "f2e5503e-927d-4ad3-9500-4ab9e55deb59";
     private static final String API_KEY = "89abea05-01e5-4726-8cfb-2fcc5e31c364";
 
-    public static URL getURL(int type, int line){
-        if (type == 1){
-            if(line == 0) return getAllBusesURL();
-            return null;
-        } else {
-            if(line == 0) return getAllTramsURL();
+    public static URL getURL(int lineType, String lineNumber){
+        if (lineType == 1 || lineType == 2){
+
+            if(lineNumber != null) return getAllTransportByLineURL(lineType, lineNumber);
             return null;
         }
+
+        return null;
 
     }
 
@@ -61,6 +61,25 @@ public class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+    private static URL getAllTransportByLineURL(int lineType, String lineNumber){
+        Uri busesQueryUri = Uri.parse(API_WEBSITE_URL).buildUpon()
+                .appendQueryParameter(RESOURCE_ID_PARAM, RESOURCE_ID)
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .appendQueryParameter(TYPE_PARAM, Integer.toString(lineType))
+                .appendQueryParameter(LINE_PARAM, lineNumber)
+                .build();
+
+        try {
+            URL requestURL = new URL(busesQueryUri.toString());
+            Log.v(TAG, "Buses/Trams URL: " + requestURL);
+            return requestURL;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     private static URL getAllBusesURL(){
