@@ -61,6 +61,7 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
             setContentView(R.layout.activity_buses);
         } else{
             setContentView(R.layout.activity_trams);
+            setTitle(R.string.title_activity_trams);
         }
 
         mLineTextView = (EditText) findViewById(R.id.edit_query);
@@ -71,8 +72,6 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
 
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-
 
     }
 
@@ -106,7 +105,6 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
         uiSettings.setZoomControlsEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(warsaw.getCenter(), 10));
 
-
     }
 
     public void setDisplayedLine(View view){
@@ -117,12 +115,16 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
         }
 
         isDataSyncStarted = true;
+
         DataSyncUtils.initialize(this, lineType, mDisplayedLine);
 
         getSupportLoaderManager().restartLoader(ID_LOADER, null, this);
 
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+        Toast toast = Toast.makeText(this, "Pobieranie danych dla lini: " + mDisplayedLine, Toast.LENGTH_LONG);
+        toast.show();
 
     }
 

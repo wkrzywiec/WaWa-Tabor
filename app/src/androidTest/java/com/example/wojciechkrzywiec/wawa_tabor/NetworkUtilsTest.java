@@ -21,8 +21,8 @@ public class NetworkUtilsTest {
 
     @Test
     public void given_NetworkUtils_When_FetchAllBussesUrl_Then_UrlCreated(){
-        String expectedUrlString ="https://api.um.warszawa.pl/api/action/busestrams_get/?resource_id=f2e5503e-927d-4ad3-9500-4ab9e55deb59&apikey=89abea05-01e5-4726-8cfb-2fcc5e31c364&type=1";
-        String actualUrlString = NetworkUtils.getURL(1, 0).toString();
+        String expectedUrlString ="https://api.um.warszawa.pl/api/action/busestrams_get/?resource_id=f2e5503e-927d-4ad3-9500-4ab9e55deb59&apikey=89abea05-01e5-4726-8cfb-2fcc5e31c364&type=1&line=131";
+        String actualUrlString = NetworkUtils.getURL(1, "131").toString();
 
         Assert.assertEquals(expectedUrlString, actualUrlString);
     }
