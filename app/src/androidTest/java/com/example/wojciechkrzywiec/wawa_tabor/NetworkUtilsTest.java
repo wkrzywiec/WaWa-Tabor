@@ -1,6 +1,8 @@
 package com.example.wojciechkrzywiec.wawa_tabor;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -20,7 +22,7 @@ import java.net.URL;
 public class NetworkUtilsTest {
 
     @Test
-    public void given_NetworkUtils_When_FetchAllBussesUrl_Then_UrlCreated(){
+    public void given_NetworkUtils_When_FetchAllBussesOfOneLineUrl_Then_UrlCreated(){
         String expectedUrlString ="https://api.um.warszawa.pl/api/action/busestrams_get/?resource_id=f2e5503e-927d-4ad3-9500-4ab9e55deb59&apikey=89abea05-01e5-4726-8cfb-2fcc5e31c364&type=1&line=131";
         String actualUrlString = NetworkUtils.getURL(1, "131").toString();
 
@@ -28,14 +30,26 @@ public class NetworkUtilsTest {
     }
 
     @Test
-    public void given_NetworkUtils_WhenFetchAllTramsUrl_Then_Null(){
+    public void given_NetworkUtils_When_FetchAllTramsOfOneLineUrl_Then_UrlCreated(){
 
-        URL actualUrlString = NetworkUtils.getURL(2, 0);
+        String expectedUrlString = "https://api.um.warszawa.pl/api/action/busestrams_get/?resource_id=f2e5503e-927d-4ad3-9500-4ab9e55deb59&apikey=89abea05-01e5-4726-8cfb-2fcc5e31c364&type=2&line=33";
+        String actualUrlString = NetworkUtils.getURL(2, "33").toString();
+
+        Assert.assertEquals(expectedUrlString, actualUrlString);
+    }
+
+    @Test
+    public void given_NetworkUtils_When_FetchOtherLineTypeUrl_Then_ReceiveNullUrl(){
+        URL actualUrlString = NetworkUtils.getURL(3, "180");
 
         Assert.assertNull(actualUrlString);
     }
 
+    @Test
+    public void given_NetworkUtils_When_FetchNullLine_Then_ReceiveNullUrl(){
+        URL actualUrlString = NetworkUtils.getURL(2, null);
 
-
+        Assert.assertNull(actualUrlString);
+    }
 
 }

@@ -81,6 +81,7 @@ public class TransportProviderTest {
 
         ContentValues[] mockedContentValues = mockTransportContentValues();
 
+        //When
         long numberOfRows = resolver.bulkInsert(
                 TransportContract.TransportEntry.TABLE_URI,
                 mockedContentValues

@@ -17,7 +17,8 @@ import java.net.URL;
 
 public class DatabaseSyncTask {
 
-    synchronized public static void syncDatabase(Context context, int lineType, String lineNumber) {
+    public static final int NO_DATA_ADDED = 0;
+    synchronized public static int syncDatabase(Context context, int lineType, String lineNumber) {
 
         try {
 
@@ -42,11 +43,14 @@ public class DatabaseSyncTask {
                         TransportContract.TransportEntry.TABLE_URI,
                         transportValues);
 
+                return transportValues.length;
             }
 
+            return NO_DATA_ADDED;
         } catch (Exception e) {
 
             e.printStackTrace();
         }
+        return NO_DATA_ADDED;
     }
 }

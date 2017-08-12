@@ -28,7 +28,7 @@ public class OpenTransportJSONUtilsTest {
     public void given_HttpStringRespond_When_PrepareContentValuesArray_Then_CheckNumber(){
 
         //Given
-        URL httpUrl = NetworkUtils.getURL(1, 0);
+        URL httpUrl = NetworkUtils.getURL(1, "131");
         int count = 0;
         ContentValues[] expectedValues;
         try {

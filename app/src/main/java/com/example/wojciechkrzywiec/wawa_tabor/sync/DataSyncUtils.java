@@ -37,7 +37,7 @@ public class DataSyncUtils {
     private static int sLineType;
     private static String sLineNumber;
 
-    synchronized public static void initialize(@NonNull final Context context, int lineId, String lineNumber) {
+    synchronized public static int initialize(@NonNull final Context context, int lineId, String lineNumber) {
 
         sLineType = lineId;
         sLineNumber = lineNumber;
@@ -45,7 +45,10 @@ public class DataSyncUtils {
         extras.putInt(context.getString(R.string.line_type), sLineType);
         extras.putString(context.getString(R.string.line_number), sLineNumber);
 
-        scheduleJobDispatcher(context);
+        int status;
+        status = scheduleJobDispatcher(context);
+
+        Log.v("wojciechkrzywiec", "Job has started for line: " + sLineNumber);
 
         Thread checkForEmpty = new Thread(new Runnable() {
 
@@ -74,11 +77,11 @@ public class DataSyncUtils {
 
         checkForEmpty.start();
 
-
+        return status;
     }
 
 
-    static void scheduleJobDispatcher(@NonNull final Context context) {
+    static int scheduleJobDispatcher(@NonNull final Context context) {
 
         driver = new GooglePlayDriver(context);
         dispatcher = new FirebaseJobDispatcher(driver);
@@ -106,9 +109,9 @@ public class DataSyncUtils {
 
                 .build();
 
-        dispatcher.schedule(databaseSyncJob);
+        return dispatcher.schedule(databaseSyncJob);
 
-        Log.v("wojciechkrzywiec", "Job has started for line: " + sLineNumber);
+
     }
 
     public static void startImmediateSync(@NonNull final Context context) {
