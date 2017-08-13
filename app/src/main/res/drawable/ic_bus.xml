@@ -1,0 +1,12 @@
+<vector android:height="24dp" android:viewportHeight="190"
+    android:viewportWidth="190" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#000" android:name="Shape 1" android:pathData="m41 156.5c6.08 0 11 6.49 11 14.5c0 8.01 -4.92 14.5 -11 14.5c-6.08 0 -11 -6.49 -11 -14.5c0 -8.01 4.92 -14.5 11 -14.5z"/>
+    <path android:fillColor="#000" android:name="Shape 1 copy" android:pathData="m144 156.5c6.08 0 11 6.49 11 14.5c0 8.01 -4.92 14.5 -11 14.5c-6.08 0 -11 -6.49 -11 -14.5c0 -8.01 4.92 -14.5 11 -14.5z"/>
+    <path android:fillColor="#000" android:name="Shape 2" android:pathData="m24.63 10h138.24c5.59 0 10.13 4.53 10.13 10.13v138.24c0 5.59 -4.53 10.13 -10.13 10.13h-138.24c-5.59 0 -10.13 -4.53 -10.13 -10.13v-138.24c0 -5.59 4.53 -10.13 10.13 -10.13z"/>
+    <path android:fillColor="#000" android:name="Shape 2 copy 3" android:pathData="m172.91 56.99h12.36c0.5 0 0.91 0.87 0.91 1.94v26.47c0 1.07 -0.41 1.94 -0.91 1.94h-12.36c-0.5 0 -0.91 -0.87 -0.91 -1.94v-26.47c0 -1.07 0.41 -1.94 0.91 -1.94z"/>
+    <path android:fillColor="#000" android:name="Shape 2 copy 4" android:pathData="m2.24 56.99h12.36c0.5 0 0.91 0.87 0.91 1.94v26.47c0 1.07 -0.41 1.94 -0.91 1.94h-12.36c-0.5 0 -0.91 -0.87 -0.91 -1.94v-26.47c0 -1.07 0.41 -1.94 0.91 -1.94z"/>
+    <path android:fillColor="#fff" android:name="Shape 1 copy 2" android:pathData="m41.01 138.16c6.07 0 11 4.92 11 11c0 6.07 -4.92 11 -11 11c-6.07 0 -11 -4.92 -11 -11c0 -6.07 4.92 -11 11 -11z"/>
+    <path android:fillColor="#fff" android:name="Shape 1 copy 3" android:pathData="m144.01 138.16c6.07 0 11 4.92 11 11c0 6.07 -4.92 11 -11 11c-6.07 0 -11 -4.92 -11 -11c0 -6.07 4.92 -11 11 -11z"/>
+    <path android:fillColor="#fff" android:name="Shape 2 copy" android:pathData="m30.47 34.67h125.89c5.09 0 9.22 2.71 9.22 6.05v82.57c0 3.34 -4.13 6.05 -9.22 6.05h-125.89c-5.09 0 -9.22 -2.71 -9.22 -6.05v-82.57c0 -3.34 4.13 -6.05 9.22 -6.05z"/>
+    <path android:fillColor="#fff" android:name="Shape 2 copy 2" android:pathData="m30.47 14.32h125.89c5.09 0 9.22 0.47 9.22 1.04v14.26c0 0.58 -4.13 1.04 -9.22 1.04h-125.89c-5.09 0 -9.22 -0.47 -9.22 -1.04v-14.26c0 -0.58 4.13 -1.04 9.22 -1.04z"/>
+</vector>

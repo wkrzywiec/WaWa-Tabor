@@ -2,15 +2,23 @@ package com.example.wojciechkrzywiec.wawa_tabor;
 
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -79,6 +87,7 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
     protected void onPause() {
         super.onPause();
 
+        if(isDataSyncStarted)
         DataSyncUtils.cancelScheduledJob();
     }
 
@@ -128,6 +137,7 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -174,7 +184,8 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
 
-        String selection = TransportContract.TransportEntry.COLUMN_LINE + "=" + mDisplayedLine;
+        String selection = TransportContract.TransportEntry.COLUMN_LINE + "= '" + mDisplayedLine + "' ";
+
     switch (loaderId) {
         case ID_LOADER:
             return new CursorLoader(
@@ -208,18 +219,9 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
                 LatLng position = new LatLng(lat, lon);
 
                 mMap.addMarker(new MarkerOptions().position(position).title(line).snippet(busDetails));
+
             } while (data.moveToNext());
-        } else {
-            for(int i=0; i<4; i++){
-                if (lineType == 1){
-                    Toast.makeText(this, "Nie ma autobusu o numerze lini: " + mDisplayedLine, Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(this, "Nie ma tramwaju o numerze lini: " + mDisplayedLine, Toast.LENGTH_LONG);
-                }
-            }
         }
-
-
     }
 
     @Override

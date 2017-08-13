@@ -29,7 +29,7 @@ public class DataSyncUtils {
 
     private static final String DATABASE_SYNC_TAG = "database_sync";
     private static final int SYNC_INTERVAL_SECONDS = 10;
-    private static final int SYNC_FLEXTIME_SECONDS = 5;
+    private static final int SYNC_FLEXTIME_SECONDS = 2;
 
     private static Driver driver;
     private static FirebaseJobDispatcher dispatcher;
