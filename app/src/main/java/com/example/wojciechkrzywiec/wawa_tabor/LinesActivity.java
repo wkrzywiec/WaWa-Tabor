@@ -137,24 +137,6 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
         return true;
     }
 
-    private boolean checkIfBusIsAvailable() {
-
-        Cursor cursor = getContentResolver().query(
-                TransportContract.TransportEntry.TABLE_URI,
-                null,
-                TransportContract.TransportEntry.COLUMN_LINE + " = " + "'" + mDisplayedLine + "'",
-                null,
-                null
-        );
-
-        if (cursor == null || cursor.getCount() <= 0){
-            cursor.close();
-            return false;
-        }
-        cursor.close();
-        return true;
-
-    }
 
     private void setMapStyle(){
 
@@ -227,6 +209,14 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
 
                 mMap.addMarker(new MarkerOptions().position(position).title(line).snippet(busDetails));
             } while (data.moveToNext());
+        } else {
+            for(int i=0; i<4; i++){
+                if (lineType == 1){
+                    Toast.makeText(this, "Nie ma autobusu o numerze lini: " + mDisplayedLine, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Nie ma tramwaju o numerze lini: " + mDisplayedLine, Toast.LENGTH_LONG);
+                }
+            }
         }
 
 

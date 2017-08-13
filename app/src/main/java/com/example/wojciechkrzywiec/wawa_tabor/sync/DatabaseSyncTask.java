@@ -3,7 +3,6 @@ package com.example.wojciechkrzywiec.wawa_tabor.sync;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.widget.Toast;
 
 import com.example.wojciechkrzywiec.wawa_tabor.data.NetworkUtils;
 import com.example.wojciechkrzywiec.wawa_tabor.data.OpenTransportJSONUtils;
@@ -25,6 +24,7 @@ public class DatabaseSyncTask {
             URL requestedUrl = NetworkUtils.getURL(lineType, lineNumber);
 
             String jsonResponse = NetworkUtils.getRespondFromHttp(requestedUrl);
+
 
             ContentValues[] transportValues = OpenTransportJSONUtils
                     .getTransportContentValuesFromJson(jsonResponse);
