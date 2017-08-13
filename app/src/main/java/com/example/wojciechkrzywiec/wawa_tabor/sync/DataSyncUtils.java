@@ -25,8 +25,6 @@ import com.firebase.jobdispatcher.Trigger;
 
 public class DataSyncUtils {
 
-    private static boolean sInitialized;
-
     private static final String DATABASE_SYNC_TAG = "database_sync";
     private static final int SYNC_INTERVAL_SECONDS = 10;
     private static final int SYNC_FLEXTIME_SECONDS = 2;
