@@ -1,4 +1,4 @@
-package com.example.wojciechkrzywiec.wawa_tabor.data;
+package com.wawa_applications.wawa_tabor.data;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -9,7 +9,7 @@ import android.provider.BaseColumns;
 
 public class TransportContract {
 
-    public static final String CONTENT_AUTHORITY = "com.example.wojciechkrzywiec.wawa_tabor";
+    public static final String CONTENT_AUTHORITY = "com.wawa_applications.wawa_tabor";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_TRANSPORT = "transport";
 

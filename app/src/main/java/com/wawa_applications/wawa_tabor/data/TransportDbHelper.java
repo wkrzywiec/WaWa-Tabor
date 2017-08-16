@@ -1,4 +1,4 @@
-package com.example.wojciechkrzywiec.wawa_tabor.data;
+package com.wawa_applications.wawa_tabor.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class TransportDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "transport.db";
-
 
     private static final int DATABASE_VERSION = 1;
 

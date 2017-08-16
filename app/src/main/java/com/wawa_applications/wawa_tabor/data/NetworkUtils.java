@@ -1,7 +1,6 @@
-package com.example.wojciechkrzywiec.wawa_tabor.data;
+package com.wawa_applications.wawa_tabor.data;
 
 import android.net.Uri;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,8 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by Wojtek Krzywiec on 25/07/2017.
@@ -56,7 +53,6 @@ public class NetworkUtils {
                 response = scanner.next();
             }
             scanner.close();
-            Log.v(TAG, "Respond from Http: " + response);
             return response;
         } finally {
             urlConnection.disconnect();
@@ -73,47 +69,11 @@ public class NetworkUtils {
 
         try {
             URL requestURL = new URL(busesQueryUri.toString());
-            Log.v(TAG, "Buses/Trams URL: " + requestURL);
             return requestURL;
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;
         }
-
     }
 
-    private static URL getAllBusesURL(){
-        Uri busesQueryUri = Uri.parse(API_WEBSITE_URL).buildUpon()
-                .appendQueryParameter(RESOURCE_ID_PARAM, RESOURCE_ID)
-                .appendQueryParameter(API_KEY_PARAM, API_KEY)
-                .appendQueryParameter(TYPE_PARAM, Integer.toString(1))
-                .build();
-
-        try {
-            URL busesURL = new URL(busesQueryUri.toString());
-            Log.v(TAG, "Buses URL: " + busesURL);
-            return busesURL;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-    }
-
-    public static URL getAllTramsURL() {
-        Uri tramsQueryUri = Uri.parse(API_WEBSITE_URL).buildUpon()
-                .appendQueryParameter(RESOURCE_ID_PARAM, RESOURCE_ID)
-                .appendQueryParameter(API_KEY_PARAM, API_KEY)
-                .appendQueryParameter(TYPE_PARAM, Integer.toString(2))
-                .build();
-
-        try {
-            URL tramsURL = new URL(tramsQueryUri.toString());
-            Log.v(TAG, "Trams URL: " + tramsURL);
-            return tramsURL;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }

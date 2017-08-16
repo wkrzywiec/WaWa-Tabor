@@ -1,9 +1,9 @@
-package com.example.wojciechkrzywiec.wawa_tabor.sync;
+package com.wawa_applications.wawa_tabor.sync;
 
 import android.app.IntentService;
 import android.content.Intent;
 
-import com.example.wojciechkrzywiec.wawa_tabor.R;
+import com.wawa_applications.wawa_tabor.R;
 
 /**
  * Created by Wojtek Krzywiec on 30/07/2017.

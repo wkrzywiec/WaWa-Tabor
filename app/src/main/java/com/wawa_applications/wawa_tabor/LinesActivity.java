@@ -1,28 +1,17 @@
-package com.example.wojciechkrzywiec.wawa_tabor;
+package com.wawa_applications.wawa_tabor;
 
 
-
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,9 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.wojciechkrzywiec.wawa_tabor.data.TransportContract;
-import com.example.wojciechkrzywiec.wawa_tabor.pref.WaWaTaborInfoWindow;
-import com.example.wojciechkrzywiec.wawa_tabor.sync.DataSyncUtils;
+import com.wawa_applications.wawa_tabor.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -43,9 +30,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.wawa_applications.wawa_tabor.data.TransportContract;
+import com.wawa_applications.wawa_tabor.pref.WaWaTaborInfoWindow;
+import com.wawa_applications.wawa_tabor.sync.DataSyncUtils;
 
-
-import static android.content.ContentValues.TAG;
 
 public class LinesActivity extends AppCompatActivity implements OnMapReadyCallback,
         LoaderManager.LoaderCallbacks<Cursor>{
@@ -120,7 +108,7 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
         mDisplayedLine = mLineTextView.getText().toString();
 
         if(isDataSyncStarted){
-            Log.v(TAG, "Job has finished? " + String.valueOf(DataSyncUtils.cancelScheduledJob()));
+            String.valueOf(DataSyncUtils.cancelScheduledJob());
         }
 
         isDataSyncStarted = true;
@@ -206,8 +194,6 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
         if (data.getCount() != 0){
             mMap.clear();
             data.moveToFirst();
-
-            Log.v(TAG,"Wszysttkich autobusów jest: " + String.valueOf(data.getCount()));
 
             do {
                 double lat = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LAT));

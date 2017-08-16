@@ -1,12 +1,10 @@
-package com.example.wojciechkrzywiec.wawa_tabor.sync;
+package com.wawa_applications.wawa_tabor.sync;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.example.wojciechkrzywiec.wawa_tabor.R;
+import com.wawa_applications.wawa_tabor.R;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 
@@ -51,7 +49,7 @@ public class DatabaseSyncJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
-        Log.i("Wojciechkrzywiec", "servicejob sie skonczyl");
+
         if (mFetchTransportTask != null) {
             mFetchTransportTask.cancel(true);
         }

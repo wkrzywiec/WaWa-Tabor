@@ -4,11 +4,11 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.0"
     defaultConfig {
-        applicationId "com.example.wojciechkrzywiec.wawa_tabor"
+        applicationId "com.wawa_applications.wawa_tabor"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         testOptions {
             unitTests.returnDefaultValues = true

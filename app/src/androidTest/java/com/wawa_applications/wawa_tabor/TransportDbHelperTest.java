@@ -1,15 +1,13 @@
-package com.example.wojciechkrzywiec.wawa_tabor;
+package com.wawa_applications.wawa_tabor;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.example.wojciechkrzywiec.wawa_tabor.data.TransportContract;
-import com.example.wojciechkrzywiec.wawa_tabor.data.TransportDbHelper;
+import com.wawa_applications.wawa_tabor.data.TransportDbHelper;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

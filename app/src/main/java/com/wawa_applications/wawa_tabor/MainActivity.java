@@ -1,15 +1,23 @@
-package com.example.wojciechkrzywiec.wawa_tabor;
+package com.wawa_applications.wawa_tabor;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 
+import com.wawa_applications.wawa_tabor.R;
+
+/**
+ *
+ * This application is using data provided by Miasto Stołeczne Warszawa (Cityo of Warsaw),
+ * that are obtained from the website http://api.um.warszawa.pl
+ *
+ * The first release of these data to the public was on 31st March 2017.
+ *
+*/
 public class MainActivity extends AppCompatActivity {
 
 
-    private Button mBusesButton;
     private int busId = 1;
     private int tramId = 2;
 
@@ -18,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mBusesButton = (Button) findViewById(R.id.buses_button);
     }
 
 

@@ -1,10 +1,10 @@
-package com.example.wojciechkrzywiec.wawa_tabor;
+package com.wawa_applications.wawa_tabor;
 
 import android.content.ContentValues;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.example.wojciechkrzywiec.wawa_tabor.data.NetworkUtils;
-import com.example.wojciechkrzywiec.wawa_tabor.data.OpenTransportJSONUtils;
+import com.wawa_applications.wawa_tabor.data.NetworkUtils;
+import com.wawa_applications.wawa_tabor.data.OpenTransportJSONUtils;
 
 import junit.framework.Assert;
 

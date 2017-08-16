@@ -1,4 +1,4 @@
-package com.example.wojciechkrzywiec.wawa_tabor.sync;
+package com.wawa_applications.wawa_tabor.sync;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,18 +6,16 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.example.wojciechkrzywiec.wawa_tabor.R;
-import com.example.wojciechkrzywiec.wawa_tabor.data.TransportContract;
+import com.wawa_applications.wawa_tabor.R;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.Driver;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
+import com.wawa_applications.wawa_tabor.data.TransportContract;
 
 /**
  * Created by Wojtek Krzywiec on 30/07/2017.
@@ -45,8 +43,6 @@ public class DataSyncUtils {
 
         int status;
         status = scheduleJobDispatcher(context);
-
-        Log.v("wojciechkrzywiec", "Job has started for line: " + sLineNumber);
 
         Thread checkForEmpty = new Thread(new Runnable() {
 

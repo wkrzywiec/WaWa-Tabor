@@ -1,4 +1,4 @@
-package com.example.wojciechkrzywiec.wawa_tabor.data;
+package com.wawa_applications.wawa_tabor.data;
 
 import android.annotation.TargetApi;
 import android.content.ContentProvider;
@@ -26,11 +26,9 @@ public class TransportProvider extends ContentProvider {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = TransportContract.CONTENT_AUTHORITY;
 
-
         matcher.addURI(authority, TransportContract.PATH_TRANSPORT, CODE_TRANSPORT);
 
         return matcher;
-
     }
 
 
