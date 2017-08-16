@@ -8,3 +8,8 @@ WaWa Tabor is a small app that is desiganted to provide online location of all b
 
 
 ## Screenshots
+
+<img src="https://github.com/wkrzywiec/WaWa-Tabor/blob/master/Screenshot_1.jpg" height="350"> <img src="https://github.com/wkrzywiec/WaWa-Tabor/blob/master/Screenshot_187.jpg" height="350">
+<img src="https://github.com/wkrzywiec/WaWa-Tabor/blob/master/Screenshot_122.jpg" height="350">
+<img src="https://github.com/wkrzywiec/WaWa-Tabor/blob/master/Screenshot_74.jpg" height="350">
+<img src="https://github.com/wkrzywiec/WaWa-Tabor/blob/master/Screenshot_119.jpg" height="350">
