@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -42,7 +41,6 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
@@ -56,8 +54,6 @@ public class LinesActivity extends AppCompatActivity
 
     private GoogleMap mMap;
     private LocationManager locationManager;
-    private LocationListener locationListener;
-    private Marker currentLocationMarker;
     private String mDisplayedLine;
 
     private static final int ID_LOADER = 88;
@@ -85,7 +81,9 @@ public class LinesActivity extends AppCompatActivity
         mapFragment.getMapAsync(this);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        
+
+        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+
         mLineTextView.setOnEditorActionListener(new EditText.OnEditorActionListener() {
 
             @Override
@@ -238,6 +236,10 @@ public class LinesActivity extends AppCompatActivity
 
     @Override
     public boolean onMyLocationButtonClick() {
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            Toast.makeText(this, "GPS jest wyłączony.", Toast.LENGTH_LONG).show();
+        }
         return false;
     }
 
