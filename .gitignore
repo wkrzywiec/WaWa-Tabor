@@ -7,3 +7,7 @@
 /build
 /captures
 .externalNativeBuild
+
+# Google Maps API keys
+/app/src/debug/res/values/google_maps_api.xml
+/app/src/release/res/values/google_maps_api.xml
