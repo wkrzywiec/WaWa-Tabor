@@ -1,7 +1,6 @@
 package com.example.wojciechkrzywiec.wawa_tabor;
 
 
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -9,12 +8,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
@@ -45,15 +42,22 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
 import static android.content.ContentValues.TAG;
 
-public class LinesActivity extends AppCompatActivity implements OnMapReadyCallback,
-        LoaderManager.LoaderCallbacks<Cursor>{
+public class LinesActivity extends AppCompatActivity
+        implements GoogleMap.OnMyLocationButtonClickListener,
+        OnMapReadyCallback,
+        LoaderManager.LoaderCallbacks<Cursor>
+        {
 
     private GoogleMap mMap;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private Marker currentLocationMarker;
     private String mDisplayedLine;
 
     private static final int ID_LOADER = 88;
@@ -62,15 +66,14 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
 
     private EditText mLineTextView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        lineType = getIntent().getIntExtra(getString(R.string.line_type),1);
-        if (lineType == 1){
+        lineType = getIntent().getIntExtra(getString(R.string.line_type), 1);
+        if (lineType == 1) {
             setContentView(R.layout.activity_buses);
-        } else{
+        } else {
             setContentView(R.layout.activity_trams);
             setTitle(R.string.title_activity_trams);
         }
@@ -82,13 +85,12 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
         mapFragment.getMapAsync(this);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-
-        mLineTextView.setOnEditorActionListener(new EditText.OnEditorActionListener(){
+        
+        mLineTextView.setOnEditorActionListener(new EditText.OnEditorActionListener() {
 
             @Override
             public boolean onEditorAction(TextView textView, int actionID, KeyEvent keyEvent) {
-                if (actionID == EditorInfo.IME_ACTION_DONE){
+                if (actionID == EditorInfo.IME_ACTION_DONE) {
                     setDisplayedLine(textView);
                     return true;
                 }
@@ -101,8 +103,8 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
     protected void onPause() {
         super.onPause();
 
-        if(isDataSyncStarted)
-        DataSyncUtils.cancelScheduledJob();
+        if (isDataSyncStarted)
+            DataSyncUtils.cancelScheduledJob();
     }
 
     @Override
@@ -120,8 +122,13 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        mMap.setOnMyLocationButtonClickListener(this);
+        enableMyLocation();
+
         LatLngBounds warsaw = new LatLngBounds(new LatLng(52.048272, 20.78179951), new LatLng(52.4175467, 21.18040289));
         mMap.setBuildingsEnabled(false);
+
         mMap.setInfoWindowAdapter(new WaWaTaborInfoWindow(this));
         setMapStyle();
         UiSettings uiSettings = mMap.getUiSettings();
@@ -161,39 +168,6 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
         return true;
     }
 
-
-    private void setMapStyle(){
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-        String key = getResources().getString(R.string.map_style_key);
-        String defaultValue = getResources().getString(R.string.map_style_value_default);
-
-        String userMapStyle = sharedPref.getString(key, defaultValue);
-
-        if (userMapStyle.equals(getResources().getString(R.string.map_style_value_black_and_white))){
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_black_and_white));
-
-        } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_red_alert))){
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_red_alert));
-
-        } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_retro))) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_retro));
-
-        } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_night))) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_night));
-
-        } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_greyscale))) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_greyscale));
-
-        } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_toned))) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_toned));
-
-        } else {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_default));
-        }
-
-    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
@@ -262,5 +236,51 @@ public class LinesActivity extends AppCompatActivity implements OnMapReadyCallba
         return super.onOptionsItemSelected(item);
     }
 
-}
+    @Override
+    public boolean onMyLocationButtonClick() {
+        return false;
+    }
+
+    private void setMapStyle(){
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String key = getResources().getString(R.string.map_style_key);
+        String defaultValue = getResources().getString(R.string.map_style_value_default);
+
+        String userMapStyle = sharedPref.getString(key, defaultValue);
+
+        if (userMapStyle.equals(getResources().getString(R.string.map_style_value_black_and_white))){
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_black_and_white));
+
+            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_red_alert))){
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_red_alert));
+
+            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_retro))) {
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_retro));
+
+            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_night))) {
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_night));
+
+            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_greyscale))) {
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_greyscale));
+
+            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_toned))) {
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_toned));
+
+            } else {
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_default));
+            }
+    }
+
+    private void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else if (mMap != null) {
+            mMap.setMyLocationEnabled(true);
+        }
+    }
+
+    }
 
