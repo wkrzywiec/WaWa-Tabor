@@ -48,8 +48,6 @@ public class DataSyncUtils {
         int status;
         status = scheduleJobDispatcher(context);
 
-        Log.v("wojciechkrzywiec", "Job has started for line: " + sLineNumber);
-
         Thread checkForEmpty = new Thread(new Runnable() {
 
             @Override

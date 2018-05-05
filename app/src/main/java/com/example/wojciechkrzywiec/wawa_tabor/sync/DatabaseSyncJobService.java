@@ -51,7 +51,6 @@ public class DatabaseSyncJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
-        Log.i("Wojciechkrzywiec", "servicejob sie skonczyl");
         if (mFetchTransportTask != null) {
             mFetchTransportTask.cancel(true);
         }

@@ -138,9 +138,7 @@ public class LinesActivity extends AppCompatActivity
     public void setDisplayedLine(View view){
         mDisplayedLine = mLineTextView.getText().toString();
 
-        if(isDataSyncStarted){
-            Log.v(TAG, "Job has finished? " + String.valueOf(DataSyncUtils.cancelScheduledJob()));
-        }
+        mDisplayedLine.toUpperCase();
 
         isDataSyncStarted = true;
 
@@ -193,8 +191,6 @@ public class LinesActivity extends AppCompatActivity
             mMap.clear();
             data.moveToFirst();
 
-            Log.v(TAG,"Wszysttkich autobusów jest: " + String.valueOf(data.getCount()));
-
             do {
                 double lat = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LAT));
                 double lon = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LON));
@@ -238,7 +234,7 @@ public class LinesActivity extends AppCompatActivity
     public boolean onMyLocationButtonClick() {
 
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            Toast.makeText(this, "GPS jest wyłączony.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Brak sygnału GPS. Sprawdź, czy masz go włączonego.", Toast.LENGTH_LONG).show();
         }
         return false;
     }

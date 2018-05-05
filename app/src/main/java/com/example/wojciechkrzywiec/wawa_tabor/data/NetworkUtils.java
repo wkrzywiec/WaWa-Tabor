@@ -28,8 +28,8 @@ public class NetworkUtils {
     private static final String TYPE_PARAM = "type";
     private static final String LINE_PARAM = "line";
 
-    private static final String RESOURCE_ID = "f2e5503e-927d-4ad3-9500-4ab9e55deb59";
-    private static final String API_KEY = "89abea05-01e5-4726-8cfb-2fcc5e31c364";
+    private static final String RESOURCE_ID = "";
+    private static final String API_KEY = "";
 
     public static URL getURL(int lineType, String lineNumber){
         if (lineType == 1 || lineType == 2){
@@ -56,7 +56,6 @@ public class NetworkUtils {
                 response = scanner.next();
             }
             scanner.close();
-            Log.v(TAG, "Respond from Http: " + response);
             return response;
         } finally {
             urlConnection.disconnect();
@@ -73,7 +72,6 @@ public class NetworkUtils {
 
         try {
             URL requestURL = new URL(busesQueryUri.toString());
-            Log.v(TAG, "Buses/Trams URL: " + requestURL);
             return requestURL;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -91,7 +89,6 @@ public class NetworkUtils {
 
         try {
             URL busesURL = new URL(busesQueryUri.toString());
-            Log.v(TAG, "Buses URL: " + busesURL);
             return busesURL;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -109,7 +106,6 @@ public class NetworkUtils {
 
         try {
             URL tramsURL = new URL(tramsQueryUri.toString());
-            Log.v(TAG, "Trams URL: " + tramsURL);
             return tramsURL;
         } catch (MalformedURLException e) {
             e.printStackTrace();

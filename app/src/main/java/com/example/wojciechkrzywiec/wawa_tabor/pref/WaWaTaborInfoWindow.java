@@ -42,17 +42,6 @@ public class WaWaTaborInfoWindow implements GoogleMap.InfoWindowAdapter {
 
         String title = marker.getTitle();
 
-        if (checkNightBus(title)) {
-            lineNumberTextView.setTextColor(Color.WHITE);
-            SpannableString highlightedLine = new SpannableString(title);
-            highlightedLine.setSpan(
-                    new BackgroundColorSpan(ContextCompat.getColor(mContext, R.color.night_transport_color)),
-                    0,
-                    2,
-                    0
-            );
-        }
-
         lineNumberTextView.setText(title);
 
         if (checkHurriesTransport(title))
@@ -80,16 +69,6 @@ public class WaWaTaborInfoWindow implements GoogleMap.InfoWindowAdapter {
             return false;
 
         } catch (NumberFormatException e) {
-            return false;
-        }
-
-    }
-
-    private boolean checkNightBus(String line){
-
-        if (line.contains("N")){
-            return true;
-        } else{
             return false;
         }
 
