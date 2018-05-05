@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.wojciechkrzywiec.wawa_tabor">
+    package="com.wawa_applications.wawa_tabor">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -27,10 +27,10 @@
         <activity
             android:name=".LinesActivity"
             android:label="@string/title_activity_buses"
-            android:parentActivityName="com.example.wojciechkrzywiec.wawa_tabor.MainActivity">
+            android:parentActivityName="com.wawa_applications.wawa_tabor.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.wojciechkrzywiec.wawa_tabor.MainActivity" />
+                android:value="com.wawa_applications.wawa_tabor.MainActivity" />
         </activity>
 
         <activity
@@ -54,7 +54,7 @@
 
 
         <service
-            android:name=".sync.DatabaseSyncJobService"
+            android:name="com.wawa_applications.wawa_tabor.sync.DatabaseSyncJobService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false">
         <intent-filter>

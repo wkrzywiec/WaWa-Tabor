@@ -1,12 +1,8 @@
-package com.example.wojciechkrzywiec.wawa_tabor;
+package com.wojciechkrzywiec.wawa_tabor;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.wifi.WifiManager;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.example.wojciechkrzywiec.wawa_tabor.data.NetworkUtils;
+import com.wawa_applications.wawa_tabor.data.NetworkUtils;
 
 import junit.framework.Assert;
 

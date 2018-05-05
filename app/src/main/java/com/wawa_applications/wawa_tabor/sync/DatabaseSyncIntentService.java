@@ -1,4 +1,4 @@
-package com.example.wojciechkrzywiec.wawa_tabor.sync;
+package com.wawa_applications.wawa_tabor.sync;
 
 import android.app.IntentService;
 import android.content.Intent;

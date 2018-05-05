@@ -1,12 +1,12 @@
-package com.example.wojciechkrzywiec.wawa_tabor.sync;
+package com.wawa_applications.wawa_tabor.sync;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 
-import com.example.wojciechkrzywiec.wawa_tabor.data.NetworkUtils;
-import com.example.wojciechkrzywiec.wawa_tabor.data.OpenTransportJSONUtils;
-import com.example.wojciechkrzywiec.wawa_tabor.data.TransportContract;
+import com.wawa_applications.wawa_tabor.data.NetworkUtils;
+import com.wawa_applications.wawa_tabor.data.OpenTransportJSONUtils;
+import com.wawa_applications.wawa_tabor.data.TransportContract;
 
 import java.net.URL;
 

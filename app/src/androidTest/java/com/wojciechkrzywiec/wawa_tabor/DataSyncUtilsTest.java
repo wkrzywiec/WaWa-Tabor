@@ -1,10 +1,10 @@
-package com.example.wojciechkrzywiec.wawa_tabor;
+package com.wojciechkrzywiec.wawa_tabor;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.example.wojciechkrzywiec.wawa_tabor.sync.DataSyncUtils;
+import com.wawa_applications.wawa_tabor.sync.DataSyncUtils;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 
 import junit.framework.Assert;

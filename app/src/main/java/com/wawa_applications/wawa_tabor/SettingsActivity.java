@@ -1,4 +1,4 @@
-package com.example.wojciechkrzywiec.wawa_tabor;
+package com.wawa_applications.wawa_tabor;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

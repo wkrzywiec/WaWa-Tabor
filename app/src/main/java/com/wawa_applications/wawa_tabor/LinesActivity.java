@@ -1,4 +1,4 @@
-package com.example.wojciechkrzywiec.wawa_tabor;
+package com.wawa_applications.wawa_tabor;
 
 
 import android.Manifest;
@@ -30,9 +30,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.wojciechkrzywiec.wawa_tabor.data.TransportContract;
-import com.example.wojciechkrzywiec.wawa_tabor.pref.WaWaTaborInfoWindow;
-import com.example.wojciechkrzywiec.wawa_tabor.sync.DataSyncUtils;
+import com.example.wojciechkrzywiec.wawa_tabor.R;
+import com.wawa_applications.wawa_tabor.data.TransportContract;
+import com.wawa_applications.wawa_tabor.pref.WaWaTaborInfoWindow;
+import com.wawa_applications.wawa_tabor.sync.DataSyncUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -140,6 +141,10 @@ public class LinesActivity extends AppCompatActivity
 
         mDisplayedLine.toUpperCase();
 
+        if(isDataSyncStarted){
+            Log.v(TAG, "Job has finished? " + String.valueOf(DataSyncUtils.cancelScheduledJob()));
+        }
+
         isDataSyncStarted = true;
 
         DataSyncUtils.initialize(this, lineType, mDisplayedLine);
@@ -190,6 +195,8 @@ public class LinesActivity extends AppCompatActivity
         if (data.getCount() != 0){
             mMap.clear();
             data.moveToFirst();
+
+            Log.v(TAG,"Wszysttkich autobusów jest: " + String.valueOf(data.getCount()));
 
             do {
                 double lat = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LAT));

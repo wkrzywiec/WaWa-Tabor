@@ -1,4 +1,4 @@
-package com.example.wojciechkrzywiec.wawa_tabor.pref;
+package com.wawa_applications.wawa_tabor.pref;
 
 import android.content.Context;
 import android.graphics.Color;

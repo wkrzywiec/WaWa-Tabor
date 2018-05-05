@@ -1,4 +1,4 @@
-package com.example.wojciechkrzywiec.wawa_tabor;
+package com.wojciechkrzywiec.wawa_tabor;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

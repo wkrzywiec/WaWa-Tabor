@@ -1,4 +1,4 @@
-package com.example.wojciechkrzywiec.wawa_tabor.pref;
+package com.wawa_applications.wawa_tabor.pref;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;

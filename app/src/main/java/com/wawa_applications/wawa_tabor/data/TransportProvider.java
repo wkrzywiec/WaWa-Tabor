@@ -1,4 +1,4 @@
-package com.example.wojciechkrzywiec.wawa_tabor.data;
+package com.wawa_applications.wawa_tabor.data;
 
 import android.annotation.TargetApi;
 import android.content.ContentProvider;
