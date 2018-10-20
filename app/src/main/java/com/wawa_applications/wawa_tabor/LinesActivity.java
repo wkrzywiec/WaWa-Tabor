@@ -30,7 +30,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.wojciechkrzywiec.wawa_tabor.R;
 import com.wawa_applications.wawa_tabor.data.TransportContract;
 import com.wawa_applications.wawa_tabor.pref.WaWaTaborInfoWindow;
 import com.wawa_applications.wawa_tabor.sync.DataSyncUtils;

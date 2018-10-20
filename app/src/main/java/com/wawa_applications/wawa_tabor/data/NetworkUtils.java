@@ -28,8 +28,8 @@ public class NetworkUtils {
     private static final String TYPE_PARAM = "type";
     private static final String LINE_PARAM = "line";
 
-    private static final String RESOURCE_ID = "";
-    private static final String API_KEY = "";
+    private static final String RESOURCE_ID = "f2e5503e-927d-4ad3-9500-4ab9e55deb59";
+    private static final String API_KEY = "YOUR API KET";
 
     public static URL getURL(int lineType, String lineNumber){
         if (lineType == 1 || lineType == 2){

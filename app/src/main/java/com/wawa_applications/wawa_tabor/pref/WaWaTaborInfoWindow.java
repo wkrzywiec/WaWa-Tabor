@@ -9,9 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.wojciechkrzywiec.wawa_tabor.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
+import com.wawa_applications.wawa_tabor.R;
 
 /**
  * Created by Wojtek Krzywiec on 02/08/2017.
