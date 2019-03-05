@@ -2,6 +2,8 @@ package com.wawa_applications.wawa_tabor;
 
 
 import android.Manifest;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wawa_applications.wawa_tabor.data.TransportContract;
+import com.wawa_applications.wawa_tabor.network.retrofit.model.ZTMAPILine;
 import com.wawa_applications.wawa_tabor.pref.WaWaTaborInfoWindow;
 import com.wawa_applications.wawa_tabor.sync.DataSyncUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,7 +45,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
 
+
+import java.util.stream.Collectors;
 
 import static android.content.ContentValues.TAG;
 
@@ -89,11 +95,23 @@ public class LinesActivity extends AppCompatActivity
             @Override
             public boolean onEditorAction(TextView textView, int actionID, KeyEvent keyEvent) {
                 if (actionID == EditorInfo.IME_ACTION_DONE) {
-                    setDisplayedLine(textView);
+                    //setDisplayedLine(textView);
                     return true;
                 }
                 return false;
             }
+        });
+
+        LinesViewModel viewModel = ViewModelProviders.of(this).get(LinesViewModel.class);
+        viewModel.getLineNo().observe(this, line -> {
+            viewModel.subscribeBus(line);
+
+            Toast toast = Toast.makeText(this, "Pobieranie danych dla lini: " + mDisplayedLine, Toast.LENGTH_LONG);
+            toast.show();
+        });
+
+        viewModel.getTransportList().observe(this, transportList -> {
+            Log.d("ZTM API call: ", transportList.stream().map(ZTMAPILine::toString).collect(Collectors.joining("||")));
         });
     }
 

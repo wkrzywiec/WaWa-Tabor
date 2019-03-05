@@ -1,11 +1,13 @@
-package com.wawa_applications.wawa_tabor.model.retrofit.model;
+package com.wawa_applications.wawa_tabor.network.retrofit.model;
 
 import com.google.gson.annotations.Expose;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class WaWaAPILine {
+@NoArgsConstructor
+public class ZTMAPILine {
 
     @Expose
     private Double lat;
@@ -18,7 +20,7 @@ public class WaWaAPILine {
     @Expose
     private String brigade;
 
-    public WaWaAPILine(Double lat, Double lon, String time, String line, String brigade) {
+    public ZTMAPILine(Double lat, Double lon, String time, String line, String brigade) {
         this.lat = lat;
         this.lon = lon;
         this.time = time;
