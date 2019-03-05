@@ -1,17 +1,19 @@
-package com.wawa_applications.wawa_tabor.model.retrofit;
+package com.wawa_applications.wawa_tabor.network.retrofit;
 
-import com.wawa_applications.wawa_tabor.model.retrofit.model.WaWaAPIResult;
+import com.wawa_applications.wawa_tabor.network.retrofit.model.ZTMAPIResult;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -19,56 +21,54 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
-public class WaWaAPIRetrofitIntegrationTest {
+public class ZTMAPIRetrofitIntegrationTest {
 
-    private WaWaAPIService service;
-    private final String API_KEY = "YOUR API KEY";
-    private final String RESOURCE_ID = "f2e5503e-927d-4ad3-9500-4ab9e55deb59";
+    private ZTMAPIService service;
 
     @Before
     public void setUp() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.um.warszawa.pl")
+                .baseUrl(ZTMAPIService.URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(provideOkHttpClient())
                 .build();
-        service = retrofit.create(WaWaAPIService.class);
+        service = retrofit.create(ZTMAPIService.class);
     }
 
     @Test
-    public void givenCorrectBusNo_whenCallAPI_thenReceiveResponse(){
+    public void givenCorrectBusNo_whenCallAPI_thenReceiveResponse() throws IOException{
 
-        Observable<WaWaAPIResult> resultObservable = service.getBuses(API_KEY, RESOURCE_ID, "131");
+        Observable<ZTMAPIResult> resultObservable = service.getBuses("131");
 
-        WaWaAPIResult result = resultObservable.blockingFirst();
+        ZTMAPIResult result = resultObservable.blockingFirst();
         assertTrue(result.getLinesList().size() > 0);
     }
 
     @Test
-    public void givenInCorrectBusNo_whenCallAPI_thenReceiveEmptyResponse(){
+    public void givenInCorrectBusNo_whenCallAPI_thenReceiveEmptyResponse() throws IOException{
 
-        Observable<WaWaAPIResult> resultObservable = service.getBuses(API_KEY, RESOURCE_ID, "ABC");
+        Observable<ZTMAPIResult> resultObservable = service.getBuses("ABC");
 
-        WaWaAPIResult result = resultObservable.blockingFirst();
+        ZTMAPIResult result = resultObservable.blockingFirst();
         assertTrue(result.getLinesList().size() == 0);
     }
 
     @Test
-    public void givenCorrectTramNo_whenCallAPI_thenReceiveResponse(){
+    public void givenCorrectTramNo_whenCallAPI_thenReceiveResponse() throws IOException{
 
-        Observable<WaWaAPIResult> resultObservable = service.getTrams(API_KEY, RESOURCE_ID, "18");
+        Observable<ZTMAPIResult> resultObservable = service.getTrams("18");
 
-        WaWaAPIResult result = resultObservable.blockingFirst();
+        ZTMAPIResult result = resultObservable.blockingFirst();
         assertTrue(result.getLinesList().size() > 0);
     }
 
     @Test
-    public void givenInCorrectTramNo_whenCallAPI_thenReceiveEmptyResponse(){
+    public void givenInCorrectTramNo_whenCallAPI_thenReceiveEmptyResponse() throws IOException{
 
-        Observable<WaWaAPIResult> resultObservable = service.getTrams(API_KEY, RESOURCE_ID, "ABC");
+        Observable<ZTMAPIResult> resultObservable = service.getTrams( "ABC");
 
-        WaWaAPIResult result = resultObservable.blockingFirst();
+        ZTMAPIResult result = resultObservable.blockingFirst();
         assertTrue(result.getLinesList().size() == 0);
     }
 
