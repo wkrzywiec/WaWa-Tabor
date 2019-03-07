@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 26
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.wawa_applications.wawa_tabor"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 26
         versionCode 3
         versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -30,10 +30,8 @@ dependencies {
 
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
 
-    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:appcompat-v7:26.+'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    implementation 'com.google.android.gms:play-services-maps:11.0.4'
+    implementation 'org.osmdroid:osmdroid-android:6.0.3'
     testImplementation 'junit:junit:4.12'
-
-    implementation 'com.google.maps.android:android-maps-utils:0.5+'
 }

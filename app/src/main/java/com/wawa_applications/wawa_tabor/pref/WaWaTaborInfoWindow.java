@@ -9,19 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.wojciechkrzywiec.wawa_tabor.R;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Marker;
+import com.wawa_applications.wawa_tabor.R;
 
 /**
  * Created by Wojtek Krzywiec on 02/08/2017.
  */
 
-public class WaWaTaborInfoWindow implements GoogleMap.InfoWindowAdapter {
+public class WaWaTaborInfoWindow  {
 
     Context mContext;
 
-    public WaWaTaborInfoWindow(Context context){
+    /*public WaWaTaborInfoWindow(Context context){
         mContext = context;
     }
 
@@ -72,5 +70,5 @@ public class WaWaTaborInfoWindow implements GoogleMap.InfoWindowAdapter {
             return false;
         }
 
-    }
+    }*/
 }
