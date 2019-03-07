@@ -6,17 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -31,9 +27,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.wawa_applications.wawa_tabor.R;
 import com.wawa_applications.wawa_tabor.data.TransportContract;
-import com.wawa_applications.wawa_tabor.pref.WaWaTaborInfoWindow;
 import com.wawa_applications.wawa_tabor.sync.DataSyncUtils;
 
 
@@ -50,9 +44,10 @@ import static android.content.ContentValues.TAG;
 
 public class LinesActivity extends AppCompatActivity {
 
-    private MapView map = null;
+    private Context mContext = null;
+    private MapView mapView = null;
     private MyLocationNewOverlay mLocationOverlay = null;
-    private LocationManager locationManager;
+
     private String mDisplayedLine;
 
     private static final int ID_LOADER = 88;
@@ -65,6 +60,9 @@ public class LinesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        this.mContext = getApplicationContext();
+        Configuration.getInstance().load(mContext, PreferenceManager.getDefaultSharedPreferences(mContext));
+
         lineType = getIntent().getIntExtra(getString(R.string.line_type), 1);
         if (lineType == 1) {
             setContentView(R.layout.activity_buses);
@@ -73,37 +71,11 @@ public class LinesActivity extends AppCompatActivity {
             setTitle(R.string.title_activity_trams);
         }
 
-        // map fragment
-        Context context = getApplicationContext();
-        Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
-
-        map = (MapView) findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.MAPNIK);
-
-        map.setBuiltInZoomControls(true);
-        map.setMultiTouchControls(true);
-
-        final DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        ScaleBarOverlay mScaleBarOverlay = new ScaleBarOverlay(map);
-        mScaleBarOverlay.setCentred(true);
-        mScaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10);
-        map.getOverlays().add(mScaleBarOverlay);
-
-        IMapController mapController = map.getController();
-        mapController.setZoom(11);
-        GeoPoint startPoint = new GeoPoint(52.2287235, 21.0188457);
-        mapController.setCenter(startPoint);
-
-        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context),map);
-        this.mLocationOverlay.enableMyLocation();
-        map.getOverlays().add(this.mLocationOverlay);
-
-        mLineTextView = (EditText) findViewById(R.id.edit_query);
-
+        mapView = (MapView) findViewById(R.id.map);
+        this.onCreatePrepareMap();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-
+        mLineTextView = (EditText) findViewById(R.id.edit_query);
         mLineTextView.setOnEditorActionListener(new EditText.OnEditorActionListener() {
 
             @Override
@@ -120,14 +92,14 @@ public class LinesActivity extends AppCompatActivity {
     public void onResume(){
 
         super.onResume();
-        map.onResume();
+        mapView.onResume();
     }
 
     @Override
     protected void onPause() {
 
         super.onPause();
-        map.onPause();
+        mapView.onPause();
         if (isDataSyncStarted)
             DataSyncUtils.cancelScheduledJob();
     }
@@ -271,6 +243,39 @@ public class LinesActivity extends AppCompatActivity {
         }
         return false;
     }*/
+
+    private void onCreatePrepareMap() {
+
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
+
+        mapView.setBuiltInZoomControls(true);
+        mapView.setMultiTouchControls(true);
+
+        this.setMapZoom();
+        this.setMapScaleBar();
+        this.setMyLocation();
+    }
+
+    private void setMapZoom() {
+        IMapController mapController = mapView.getController();
+        mapController.setZoom(11);
+        GeoPoint startPoint = new GeoPoint(52.2287235, 21.0188457);
+        mapController.setCenter(startPoint);
+    }
+
+    private void setMapScaleBar() {
+        final DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
+        ScaleBarOverlay mScaleBarOverlay = new ScaleBarOverlay(mapView);
+        mScaleBarOverlay.setCentred(true);
+        mScaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10);
+        mapView.getOverlays().add(mScaleBarOverlay);
+    }
+
+    private void setMyLocation() {
+        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(mContext), mapView);
+        this.mLocationOverlay.enableMyLocation();
+        mapView.getOverlays().add(this.mLocationOverlay);
+    }
 
     private void setMapStyle(){
 
