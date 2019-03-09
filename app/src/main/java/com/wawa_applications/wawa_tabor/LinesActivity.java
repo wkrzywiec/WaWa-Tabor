@@ -7,12 +7,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
+import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -31,6 +37,7 @@ import com.wawa_applications.wawa_tabor.data.TransportContract;
 import com.wawa_applications.wawa_tabor.sync.DataSyncUtils;
 
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -39,14 +46,22 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+import org.osmdroid.views.overlay.simplefastpoint.LabelledGeoPoint;
+import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay;
+import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions;
+import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
-public class LinesActivity extends AppCompatActivity {
+public class LinesActivity extends AppCompatActivity implements  LoaderManager.LoaderCallbacks<Cursor> {
 
     private Context mContext = null;
     private MapView mapView = null;
     private MyLocationNewOverlay mLocationOverlay = null;
+    List<IGeoPoint> points;
 
     private String mDisplayedLine;
 
@@ -147,7 +162,7 @@ public class LinesActivity extends AppCompatActivity {
 
         DataSyncUtils.initialize(this, lineType, mDisplayedLine);
 
-        //getSupportLoaderManager().restartLoader(ID_LOADER, null, this);
+        getSupportLoaderManager().restartLoader(ID_LOADER, null, this);
 
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -167,7 +182,7 @@ public class LinesActivity extends AppCompatActivity {
         return true;
     }
 
-/*
+
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
 
@@ -190,49 +205,61 @@ public class LinesActivity extends AppCompatActivity {
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
+
+        if (points == null) {
+            points = new ArrayList<>();
+        }
+        points.clear();
         if (data.getCount() != 0){
-            mMap.clear();
+
+            mapView.getOverlays().remove(1);
+
             data.moveToFirst();
 
-            Log.v(TAG,"Wszysttkich autobusów jest: " + String.valueOf(data.getCount()));
+            Log.v(TAG,"Wszystkich autobusów jest: " + String.valueOf(data.getCount()));
 
             do {
+
                 double lat = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LAT));
                 double lon = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LON));
                 String line =
                         data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LINE));
                 String busDetails =  data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_BRIGADE))
                         + "," + data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_TIME));
-                LatLng position = new LatLng(lat, lon);
-
-                mMap.addMarker(new MarkerOptions().position(position).title(line).snippet(busDetails));
+                points.add(new LabelledGeoPoint(lat, lon));
+                Log.v(TAG, "Transport details: " + line + ", lat: " + lat + ", lon: " + lon);
 
             } while (data.moveToNext());
+
+            SimplePointTheme pt = new SimplePointTheme(points, true);
+            Paint textStyle = new Paint();
+            textStyle.setStyle(Paint.Style.FILL);
+            textStyle.setColor(Color.parseColor("#0000ff"));
+            textStyle.setTextAlign(Paint.Align.CENTER);
+            textStyle.setTextSize(24);
+
+            SimpleFastPointOverlayOptions opt = SimpleFastPointOverlayOptions.getDefaultStyle()
+                    .setRadius(7).setIsClickable(true).setCellSize(15).setTextStyle(textStyle);
+
+            // create the overlay with the theme
+            final SimpleFastPointOverlay sfpo = new SimpleFastPointOverlay(pt, opt);
+
+            sfpo.setOnClickListener(new SimpleFastPointOverlay.OnClickListener() {
+                @Override
+                public void onClick(SimpleFastPointOverlay.PointAdapter points, Integer point) {
+                    Toast.makeText(mapView.getContext()
+                            , "You clicked " + ((LabelledGeoPoint) points.get(point)).getLabel()
+                            , Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            mapView.getOverlays().add(sfpo);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mMap.clear();
-    }*/
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-            case R.id.action_settings:
-                Intent startSettingsActivity = new Intent(this, SettingsActivity.class);
-                startActivity(startSettingsActivity);
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        mapView.getOverlays().remove(1);
     }
 
     /*@Override
