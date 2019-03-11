@@ -34,6 +34,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wawa_applications.wawa_tabor.data.TransportContract;
+import com.wawa_applications.wawa_tabor.data.ZTMLabelledGeoPoint;
+import com.wawa_applications.wawa_tabor.data.dto.TransportInfoDTO;
 import com.wawa_applications.wawa_tabor.sync.DataSyncUtils;
 
 
@@ -216,18 +218,17 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
 
             data.moveToFirst();
 
-            Log.v(TAG,"Wszystkich autobusów jest: " + String.valueOf(data.getCount()));
-
             do {
 
                 double lat = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LAT));
                 double lon = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LON));
-                String line =
-                        data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LINE));
-                String busDetails =  data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_BRIGADE))
-                        + "," + data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_TIME));
-                points.add(new LabelledGeoPoint(lat, lon));
-                Log.v(TAG, "Transport details: " + line + ", lat: " + lat + ", lon: " + lon);
+
+                TransportInfoDTO infoDTO = new TransportInfoDTO(
+                            data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LINE)),
+                            data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_BRIGADE)),
+                            data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_TIME)));
+
+                points.add(new ZTMLabelledGeoPoint(lat, lon, infoDTO));
 
             } while (data.moveToNext());
 
@@ -247,8 +248,10 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
             sfpo.setOnClickListener(new SimpleFastPointOverlay.OnClickListener() {
                 @Override
                 public void onClick(SimpleFastPointOverlay.PointAdapter points, Integer point) {
+                    TransportInfoDTO infoDTO = ((ZTMLabelledGeoPoint) points.get(point)).getTransportInfoDTO();
+
                     Toast.makeText(mapView.getContext()
-                            , "You clicked " + ((LabelledGeoPoint) points.get(point)).getLabel()
+                            , "You clicked " + infoDTO.getLine() + ", brigade: " + infoDTO.getBrigade() + ", time: " + infoDTO.getTime()
                             , Toast.LENGTH_SHORT).show();
                 }
             });
