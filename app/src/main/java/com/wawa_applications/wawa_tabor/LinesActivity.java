@@ -3,19 +3,17 @@ package com.wawa_applications.wawa_tabor;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.location.LocationManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -25,7 +23,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -37,6 +34,7 @@ import com.wawa_applications.wawa_tabor.data.TransportContract;
 import com.wawa_applications.wawa_tabor.data.ZTMLabelledGeoPoint;
 import com.wawa_applications.wawa_tabor.data.dto.TransportInfoDTO;
 import com.wawa_applications.wawa_tabor.sync.DataSyncUtils;
+import com.wawa_applications.wawa_tabor.view.TransportInfoWindow;
 
 
 import org.osmdroid.api.IGeoPoint;
@@ -45,13 +43,11 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
+import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
-import org.osmdroid.views.overlay.simplefastpoint.LabelledGeoPoint;
-import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay;
-import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions;
-import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +59,6 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
     private Context mContext = null;
     private MapView mapView = null;
     private MyLocationNewOverlay mLocationOverlay = null;
-    List<IGeoPoint> points;
 
     private String mDisplayedLine;
 
@@ -207,15 +202,9 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-
-        if (points == null) {
-            points = new ArrayList<>();
-        }
-        points.clear();
         if (data.getCount() != 0){
 
-            mapView.getOverlays().remove(1);
-
+            mapView.getOverlays().clear();
             data.moveToFirst();
 
             do {
@@ -228,41 +217,41 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
                             data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_BRIGADE)),
                             data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_TIME)));
 
-                points.add(new ZTMLabelledGeoPoint(lat, lon, infoDTO));
+
+                Marker marker = new Marker(mapView);
+                marker.setPosition(new GeoPoint(lat, lon));
+
+                Drawable markerIcon;
+                if (lineType == 1) {
+                    markerIcon = this.getResources().getDrawable(R.drawable.ic_bus);
+                } else {
+                    markerIcon = this.getResources().getDrawable(R.drawable.ic_tram);
+                }
+                marker.setIcon(markerIcon);
+                marker.setTitle(infoDTO.getLine());
+                marker.setSnippet("Brygada: " + infoDTO.getBrigade());
+                marker.setSubDescription("Czas: " +infoDTO.getTime());
+
+                marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+
+                    @Override
+                    public boolean onMarkerClick(Marker marker, MapView mapView) {
+                        marker.showInfoWindow();
+                        return true;
+                    }
+                });
+
+                mapView.getOverlays().add(marker);
+
 
             } while (data.moveToNext());
-
-            SimplePointTheme pt = new SimplePointTheme(points, true);
-            Paint textStyle = new Paint();
-            textStyle.setStyle(Paint.Style.FILL);
-            textStyle.setColor(Color.parseColor("#0000ff"));
-            textStyle.setTextAlign(Paint.Align.CENTER);
-            textStyle.setTextSize(24);
-
-            SimpleFastPointOverlayOptions opt = SimpleFastPointOverlayOptions.getDefaultStyle()
-                    .setRadius(7).setIsClickable(true).setCellSize(15).setTextStyle(textStyle);
-
-            // create the overlay with the theme
-            final SimpleFastPointOverlay sfpo = new SimpleFastPointOverlay(pt, opt);
-
-            sfpo.setOnClickListener(new SimpleFastPointOverlay.OnClickListener() {
-                @Override
-                public void onClick(SimpleFastPointOverlay.PointAdapter points, Integer point) {
-                    TransportInfoDTO infoDTO = ((ZTMLabelledGeoPoint) points.get(point)).getTransportInfoDTO();
-
-                    Toast.makeText(mapView.getContext()
-                            , "You clicked " + infoDTO.getLine() + ", brigade: " + infoDTO.getBrigade() + ", time: " + infoDTO.getTime()
-                            , Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            mapView.getOverlays().add(sfpo);
+            mapView.invalidate();
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mapView.getOverlays().remove(1);
+        mapView.getOverlays().clear();
     }
 
     /*@Override
