@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.wawa_applications.wawa_tabor.R;
-
 public class MainActivity extends AppCompatActivity {
 
 

@@ -1,28 +1,19 @@
 package com.wawa_applications.wawa_tabor;
 
 
-import android.Manifest;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -31,13 +22,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wawa_applications.wawa_tabor.data.TransportContract;
-import com.wawa_applications.wawa_tabor.data.ZTMLabelledGeoPoint;
 import com.wawa_applications.wawa_tabor.data.dto.TransportInfoDTO;
 import com.wawa_applications.wawa_tabor.sync.DataSyncUtils;
-import com.wawa_applications.wawa_tabor.view.TransportInfoWindow;
 
 
-import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -45,12 +33,8 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
-import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -85,7 +69,6 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
 
         mapView = (MapView) findViewById(R.id.map);
         this.onCreatePrepareMap();
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         mLineTextView = (EditText) findViewById(R.id.edit_query);
         mLineTextView.setOnEditorActionListener(new EditText.OnEditorActionListener() {
@@ -127,25 +110,6 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
         );
     }
 
-
-    /*@Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        mMap.setOnMyLocationButtonClickListener(this);
-        enableMyLocation();
-
-        LatLngBounds warsaw = new LatLngBounds(new LatLng(52.048272, 20.78179951), new LatLng(52.4175467, 21.18040289));
-        mMap.setBuildingsEnabled(false);
-
-        mMap.setInfoWindowAdapter(new WaWaTaborInfoWindow(this));
-        setMapStyle();
-        UiSettings uiSettings = mMap.getUiSettings();
-        uiSettings.setZoomControlsEnabled(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(warsaw.getCenter(), 10));
-
-    }*/
-
     public void setDisplayedLine(View view){
         mDisplayedLine = mLineTextView.getText().toString();
 
@@ -168,17 +132,6 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
         toast.show();
 
     }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater inflater = getMenuInflater();
-
-        inflater.inflate(R.menu.settings_menu, menu);
-        return true;
-    }
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
@@ -254,15 +207,6 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
         mapView.getOverlays().clear();
     }
 
-    /*@Override
-    public boolean onMyLocationButtonClick() {
-
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            Toast.makeText(this, "Brak sygnału GPS. Sprawdź, czy masz go włączonego.", Toast.LENGTH_LONG).show();
-        }
-        return false;
-    }*/
-
     private void onCreatePrepareMap() {
 
         mapView.setTileSource(TileSourceFactory.MAPNIK);
@@ -294,47 +238,6 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(mContext), mapView);
         this.mLocationOverlay.enableMyLocation();
         mapView.getOverlays().add(this.mLocationOverlay);
-    }
-
-    private void setMapStyle(){
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-        String key = getResources().getString(R.string.map_style_key);
-        String defaultValue = getResources().getString(R.string.map_style_value_default);
-
-        String userMapStyle = sharedPref.getString(key, defaultValue);
-
-        /*if (userMapStyle.equals(getResources().getString(R.string.map_style_value_black_and_white))){
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_black_and_white));
-
-            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_red_alert))){
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_red_alert));
-
-            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_retro))) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_retro));
-
-            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_night))) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_night));
-
-            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_greyscale))) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_greyscale));
-
-            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_toned))) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_toned));
-
-            } else {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_default));
-            }*/
-    }
-
-    private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        } /*else if (mMap != null) {
-            mMap.setMyLocationEnabled(true);
-        }*/
     }
 
 }

@@ -2,38 +2,19 @@
     <string name="app_name">WaWa Tabor</string>
 
     <string name="button_font_size">20sp</string>
-    <string name="buses_button_text">Znajdź autobusy danej lini</string>
+    <string name="buses_button_text">Znajdź autobusy</string>
     <string name="second_button_text">Pobliskie autobusy</string>
-    <string name="third_button_text">Znajdź tramwaje danej lini</string>
+    <string name="third_button_text">Znajdź tramwaje</string>
     <string name="fourth_button_text">Pobliskie tramwaje</string>
     <string name="buses_title">Autobusy na trasie</string>
 
-    <string name="title_activity_buses">Autobusy danej linii</string>
+    <string name="title_activity_buses">Autobusy</string>
     <string name="find_buses_button_text">Szukaj</string>
     <string name="find_buses_hint_text">Linia autobusowa</string>
 
-    <string name="title_activity_trams">Tramwaje danej linii</string>
+    <string name="title_activity_trams">Tramwaje</string>
     <string name="find_trams_button_text">Szukaj</string>
     <string name="find_trams_hint_text">Linia autobusowa</string>
-
-    <string name="map_style_key">MAP_STYLE</string>
-    <string name="map_style_title">Style mapy</string>
-
-    <string name="map_style_label_default">Styl domyślny</string>
-    <string name="map_style_label_black_and_white">Czarno-białe</string>
-    <string name="map_style_label_red_alert">Red Alert</string>
-    <string name="map_style_label_retro">Retro</string>
-    <string name="map_style_label_night">Noc</string>
-    <string name="map_style_label_greyscale">Skala szarości</string>
-    <string name="map_style_label_toned">Stonowane kolory</string>
-
-    <string name="map_style_value_default">map_style_default.json</string>
-    <string name="map_style_value_black_and_white">map_style_black_and_white.json</string>
-    <string name="map_style_value_red_alert">map_style_red_alert.json</string>
-    <string name="map_style_value_retro">map_style_retro.json</string>
-    <string name="map_style_value_night">map_style_night.json</string>
-    <string name="map_style_value_greyscale">map_style_greyscale.json</string>
-    <string name="map_style_value_toned">map_style_toned.json</string>
 
     <string name="line_type">line_type</string>
     <string name="line_number">line_number</string>
