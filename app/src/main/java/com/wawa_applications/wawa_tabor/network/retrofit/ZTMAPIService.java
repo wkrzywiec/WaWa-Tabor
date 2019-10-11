@@ -3,7 +3,6 @@ package com.wawa_applications.wawa_tabor.network.retrofit;
 import com.wawa_applications.wawa_tabor.network.retrofit.model.ZTMAPIResult;
 
 import io.reactivex.Observable;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 

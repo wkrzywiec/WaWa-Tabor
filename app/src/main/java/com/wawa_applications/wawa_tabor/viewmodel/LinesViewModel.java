@@ -4,30 +4,38 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.wawa_applications.wawa_tabor.network.repository.LinesCoordinatesRepository;
-import com.wawa_applications.wawa_tabor.network.repository.LinesRepository;
+import com.wawa_applications.wawa_tabor.network.retrofit.ZTMAPIService;
 import com.wawa_applications.wawa_tabor.network.retrofit.model.ZTMAPILine;
 import com.wawa_applications.wawa_tabor.network.retrofit.model.ZTMAPIResult;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LinesViewModel extends ViewModel {
 
     private MutableLiveData<String> lineNo;
     private MutableLiveData<List<ZTMAPILine>> transportList;
-
-    private LinesRepository repository;
-    private Scheduler scheduler;
+    private ZTMAPIService ztmService;
+    CompositeDisposable compositeDisposable;
 
     public LinesViewModel() {
-        repository = new LinesCoordinatesRepository();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://www.giantbomb.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build();
+        ztmService = retrofit.create(ZTMAPIService.class);
+
+        compositeDisposable = new CompositeDisposable();
     }
 
     public MutableLiveData<String> getLineNo() {
@@ -41,24 +49,30 @@ public class LinesViewModel extends ViewModel {
     public LiveData<List<ZTMAPILine>> getTransportList(){
 
         if (transportList == null){
-            transportList = new MutableLiveData<List<ZTMAPILine>>();
+            transportList = new MutableLiveData<>();
+            transportList.setValue(new ArrayList<ZTMAPILine>());
         }
         return transportList;
     }
 
     public void subscribeBus(String line) {
 
-        scheduler = Schedulers.from(Executors.newSingleThreadExecutor());
-
-        Observable.interval(15, TimeUnit.SECONDS)
-                .flatMap(n -> repository.getBuses(line)
-                        .retry(10)
-                        .subscribeOn(scheduler))
-                .observeOn(AndroidSchedulers.mainThread())
+        Disposable disposable = Observable.interval(15, TimeUnit.SECONDS)
+                .flatMap(n -> ztmService.getBuses(line))
                 .subscribe(ztmapiResult -> handleResult(ztmapiResult));
+
+        compositeDisposable.add(disposable);
+    }
+
+    public void unSubscribeBus() {
+        compositeDisposable.dispose();
     }
 
     private void handleResult(ZTMAPIResult ztmapiResult){
+        if (transportList == null){
+            transportList = new MutableLiveData<>();
+            transportList.setValue(new ArrayList<ZTMAPILine>());
+        }
         transportList.setValue(ztmapiResult.getLinesList());
     }
 }

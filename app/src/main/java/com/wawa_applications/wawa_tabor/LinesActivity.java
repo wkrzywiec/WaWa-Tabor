@@ -67,6 +67,7 @@ public class LinesActivity extends AppCompatActivity
     private boolean isDataSyncStarted = false;
 
     private EditText mLineTextView;
+    private LinesViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +103,7 @@ public class LinesActivity extends AppCompatActivity
             }
         });
 
-        LinesViewModel viewModel = ViewModelProviders.of(this).get(LinesViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(LinesViewModel.class);
         viewModel.getLineNo().observe(this, line -> {
             viewModel.subscribeBus(line);
 
@@ -119,6 +120,7 @@ public class LinesActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
 
+        viewModel.unSubscribeBus();
         if (isDataSyncStarted)
             DataSyncUtils.cancelScheduledJob();
     }
@@ -127,6 +129,7 @@ public class LinesActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
 
+        viewModel.unSubscribeBus();
         getContentResolver().delete(
                 TransportContract.TransportEntry.TABLE_URI,
                 null,
