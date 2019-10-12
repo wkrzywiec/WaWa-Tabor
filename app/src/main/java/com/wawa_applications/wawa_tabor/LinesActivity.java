@@ -1,30 +1,19 @@
 package com.wawa_applications.wawa_tabor;
 
-
-import android.Manifest;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 
-import android.location.LocationManager;
+import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.app.NavUtils;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -33,33 +22,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wawa_applications.wawa_tabor.data.TransportContract;
+import com.wawa_applications.wawa_tabor.data.dto.TransportInfoDTO;
 import com.wawa_applications.wawa_tabor.network.retrofit.model.ZTMAPILine;
-import com.wawa_applications.wawa_tabor.pref.WaWaTaborInfoWindow;
 import com.wawa_applications.wawa_tabor.sync.DataSyncUtils;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
 
+
+import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.ScaleBarOverlay;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.stream.Collectors;
 
 import static android.content.ContentValues.TAG;
 
-public class LinesActivity extends AppCompatActivity
-        implements GoogleMap.OnMyLocationButtonClickListener,
-        OnMapReadyCallback,
-        LoaderManager.LoaderCallbacks<Cursor>
-        {
+public class LinesActivity extends AppCompatActivity implements  LoaderManager.LoaderCallbacks<Cursor> {
 
-    private GoogleMap mMap;
-    private LocationManager locationManager;
+    private Context mContext = null;
+    private MapView mapView = null;
+    private MyLocationNewOverlay mLocationOverlay = null;
+
     private String mDisplayedLine;
 
     private static final int ID_LOADER = 88;
@@ -73,6 +61,9 @@ public class LinesActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        this.mContext = getApplicationContext();
+        Configuration.getInstance().load(mContext, PreferenceManager.getDefaultSharedPreferences(mContext));
+
         lineType = getIntent().getIntExtra(getString(R.string.line_type), 1);
         if (lineType == 1) {
             setContentView(R.layout.activity_buses);
@@ -81,22 +72,16 @@ public class LinesActivity extends AppCompatActivity
             setTitle(R.string.title_activity_trams);
         }
 
+        mapView = (MapView) findViewById(R.id.map);
+        this.onCreatePrepareMap();
+
         mLineTextView = (EditText) findViewById(R.id.edit_query);
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-
         mLineTextView.setOnEditorActionListener(new EditText.OnEditorActionListener() {
 
             @Override
             public boolean onEditorAction(TextView textView, int actionID, KeyEvent keyEvent) {
                 if (actionID == EditorInfo.IME_ACTION_DONE) {
-                    //setDisplayedLine(textView);
+                    setDisplayedLine(textView);
                     return true;
                 }
                 return false;
@@ -116,9 +101,17 @@ public class LinesActivity extends AppCompatActivity
         });
     }
 
+    public void onResume(){
+
+        super.onResume();
+        mapView.onResume();
+    }
+
     @Override
     protected void onPause() {
+
         super.onPause();
+        mapView.onPause();
 
         viewModel.unSubscribeBus();
         if (isDataSyncStarted)
@@ -135,25 +128,6 @@ public class LinesActivity extends AppCompatActivity
                 null,
                 null
         );
-    }
-
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        mMap.setOnMyLocationButtonClickListener(this);
-        enableMyLocation();
-
-        LatLngBounds warsaw = new LatLngBounds(new LatLng(52.048272, 20.78179951), new LatLng(52.4175467, 21.18040289));
-        mMap.setBuildingsEnabled(false);
-
-        mMap.setInfoWindowAdapter(new WaWaTaborInfoWindow(this));
-        setMapStyle();
-        UiSettings uiSettings = mMap.getUiSettings();
-        uiSettings.setZoomControlsEnabled(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(warsaw.getCenter(), 10));
-
     }
 
     public void setDisplayedLine(View view){
@@ -179,17 +153,6 @@ public class LinesActivity extends AppCompatActivity
 
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater inflater = getMenuInflater();
-
-        inflater.inflate(R.menu.settings_menu, menu);
-        return true;
-    }
-
-
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
 
@@ -213,99 +176,89 @@ public class LinesActivity extends AppCompatActivity
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         if (data.getCount() != 0){
-            mMap.clear();
+
+            mapView.getOverlays().clear();
             data.moveToFirst();
 
-            Log.v(TAG,"Wszysttkich autobusów jest: " + String.valueOf(data.getCount()));
-
             do {
+
                 double lat = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LAT));
                 double lon = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LON));
-                String line =
-                        data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LINE));
-                String busDetails =  data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_BRIGADE))
-                        + "," + data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_TIME));
-                LatLng position = new LatLng(lat, lon);
 
-                mMap.addMarker(new MarkerOptions().position(position).title(line).snippet(busDetails));
+                TransportInfoDTO infoDTO = new TransportInfoDTO(
+                            data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LINE)),
+                            data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_BRIGADE)),
+                            data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_TIME)));
+
+
+                Marker marker = new Marker(mapView);
+                marker.setPosition(new GeoPoint(lat, lon));
+
+                Drawable markerIcon;
+                if (lineType == 1) {
+                    markerIcon = this.getResources().getDrawable(R.drawable.ic_bus);
+                } else {
+                    markerIcon = this.getResources().getDrawable(R.drawable.ic_tram);
+                }
+                marker.setIcon(markerIcon);
+                marker.setTitle(infoDTO.getLine());
+                marker.setSnippet("Brygada: " + infoDTO.getBrigade());
+                marker.setSubDescription("Czas: " +infoDTO.getTime());
+
+                marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+
+                    @Override
+                    public boolean onMarkerClick(Marker marker, MapView mapView) {
+                        marker.showInfoWindow();
+                        return true;
+                    }
+                });
+
+                mapView.getOverlays().add(marker);
+
 
             } while (data.moveToNext());
+            mapView.invalidate();
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mMap.clear();
+        mapView.getOverlays().clear();
     }
 
+    private void onCreatePrepareMap() {
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
 
-        switch (item.getItemId()) {
+        mapView.setBuiltInZoomControls(true);
+        mapView.setMultiTouchControls(true);
 
-            case android.R.id.home:
-
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-            case R.id.action_settings:
-                Intent startSettingsActivity = new Intent(this, SettingsActivity.class);
-                startActivity(startSettingsActivity);
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        this.setMapZoom();
+        this.setMapScaleBar();
+        this.setMyLocation();
     }
 
-    @Override
-    public boolean onMyLocationButtonClick() {
-
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            Toast.makeText(this, "Brak sygnału GPS. Sprawdź, czy masz go włączonego.", Toast.LENGTH_LONG).show();
-        }
-        return false;
+    private void setMapZoom() {
+        IMapController mapController = mapView.getController();
+        mapController.setZoom(11);
+        GeoPoint startPoint = new GeoPoint(52.2287235, 21.0188457);
+        mapController.setCenter(startPoint);
     }
 
-    private void setMapStyle(){
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-        String key = getResources().getString(R.string.map_style_key);
-        String defaultValue = getResources().getString(R.string.map_style_value_default);
-
-        String userMapStyle = sharedPref.getString(key, defaultValue);
-
-        if (userMapStyle.equals(getResources().getString(R.string.map_style_value_black_and_white))){
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_black_and_white));
-
-            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_red_alert))){
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_red_alert));
-
-            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_retro))) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_retro));
-
-            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_night))) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_night));
-
-            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_greyscale))) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_greyscale));
-
-            } else if (userMapStyle.equals(getResources().getString(R.string.map_style_value_toned))) {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_toned));
-
-            } else {
-            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_default));
-            }
+    private void setMapScaleBar() {
+        final DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
+        ScaleBarOverlay mScaleBarOverlay = new ScaleBarOverlay(mapView);
+        mScaleBarOverlay.setCentred(true);
+        mScaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, 10);
+        mapView.getOverlays().add(mScaleBarOverlay);
     }
 
-    private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        } else if (mMap != null) {
-            mMap.setMyLocationEnabled(true);
-        }
+    private void setMyLocation() {
+        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(mContext), mapView);
+        this.mLocationOverlay.enableMyLocation();
+        mapView.getOverlays().add(this.mLocationOverlay);
     }
 
-    }
+}
 

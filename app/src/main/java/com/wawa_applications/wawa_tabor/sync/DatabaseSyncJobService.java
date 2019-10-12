@@ -4,9 +4,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.wawa_applications.wawa_tabor.R;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
-import com.wawa_applications.wawa_tabor.R;
 
 /**
  * Created by Wojtek Krzywiec on 30/07/2017.

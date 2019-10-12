@@ -13,24 +13,20 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1.00"
+            android:hint="@string/find_buses_hint_text"
             android:imeOptions="actionDone"
-            android:singleLine="true"
-            android:hint="@string/find_buses_hint_text"/>
+            android:singleLine="true" />
 
         <Button
             android:id="@+id/btnFindBus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/find_buses_button_text"
-            android:onClick="setDisplayedLine"/>
+            android:onClick="setDisplayedLine"
+            android:text="@string/find_buses_button_text" />
     </LinearLayout>
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.wojciechkrzywiec.wawa_tabor.com.example.wawa_applications.wawa_tabor.LinesActivity" />
+    <org.osmdroid.views.MapView android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>

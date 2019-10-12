@@ -30,14 +30,17 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
+
+    implementation 'com.android.support:appcompat-v7:27.+'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'org.osmdroid:osmdroid-android:6.0.3'
+    testImplementation 'junit:junit:4.12'
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:support-media-compat:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.1'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'android.arch.lifecycle:viewmodel:1.1.1'
-    implementation 'com.google.android.gms:play-services-maps:16.0.0'
-    implementation 'com.google.maps.android:android-maps-utils:0.5+'
     compileOnly 'org.projectlombok:lombok:1.16.20'
     annotationProcessor "org.projectlombok:lombok:1.16.20"
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
