@@ -49,8 +49,7 @@ public class LinesViewModel extends ViewModel {
     public LiveData<List<ZTMAPILine>> getTransportList(){
 
         if (transportList == null){
-            transportList = new MutableLiveData<>();
-            transportList.setValue(new ArrayList<ZTMAPILine>());
+            createMutableLiveData();
         }
         return transportList;
     }
@@ -70,9 +69,13 @@ public class LinesViewModel extends ViewModel {
 
     private void handleResult(ZTMAPIResult ztmapiResult){
         if (transportList == null){
-            transportList = new MutableLiveData<>();
-            transportList.setValue(new ArrayList<ZTMAPILine>());
+            createMutableLiveData();
         }
         transportList.setValue(ztmapiResult.getLinesList());
+    }
+
+    private void createMutableLiveData() {
+        transportList = new MutableLiveData<>();
+        transportList.setValue(new ArrayList<ZTMAPILine>());
     }
 }

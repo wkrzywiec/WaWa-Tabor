@@ -42,6 +42,8 @@ public class LinesViewModelTest {
     @InjectMocks
     private LinesViewModel linesViewModel;
 
+    TestScheduler testScheduler;
+
     @Rule
     public TestRule rule = new InstantTaskExecutorRule();
 
@@ -49,6 +51,8 @@ public class LinesViewModelTest {
     public void init() {
         //linesViewModel = new LinesViewModel();
         MockitoAnnotations.initMocks(this);
+        testScheduler = new TestScheduler();
+        RxJavaPlugins.setComputationSchedulerHandler(scheduler -> testScheduler);
     }
 
     @Test
@@ -61,36 +65,62 @@ public class LinesViewModelTest {
     }
 
     @Test
-    public void whenTwoBusesAreAvailable_thenReturnListWithTwoBuses() throws InterruptedException {
-
-        TestScheduler testScheduler = new TestScheduler();
-        RxJavaPlugins.setComputationSchedulerHandler(scheduler -> testScheduler);
-
+    public void whenTwoBusesAreAvailable_thenReturnListWithTwoBuses() {
         //given
         mockZTMResults("180", 2);
 
         //when
         linesViewModel.subscribeBus("180");
-        testScheduler.advanceTimeBy(20, TimeUnit.SECONDS);
+        testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
         LiveData<List<ZTMAPILine>> transportList = linesViewModel.getTransportList();
 
         //then
-        assertEquals(2, transportList.getValue().size());
+       assertEquals(2, transportList.getValue().size());
+    }
+
+    @Test
+    public void when2TimesTryToGetBuses_thenReceive2DifferentResultSets() {
+        //given
+        mock2ZTMResults("180", 2, 3);
+
+        //when
+        linesViewModel.subscribeBus("180");
+
+        testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
+        LiveData<List<ZTMAPILine>> transportList1 = linesViewModel.getTransportList();
+        assertEquals(2, transportList1.getValue().size());
+
+        testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
+        LiveData<List<ZTMAPILine>> transportList2 = linesViewModel.getTransportList();
+        assertEquals(3, transportList2.getValue().size());
+
+
     }
 
     private void mockZTMResults(String lineNo, int numberOfBuses) {
+        ZTMAPIResult results = createZTMResult(lineNo, numberOfBuses);
+        when(mockedZtmService.getBuses(any()))
+                .thenReturn(Observable.just(results));
+    }
+
+    private void mock2ZTMResults(String lineNo, int numberOfBuses, int numberOfBuses2) {
+        ZTMAPIResult results1 = createZTMResult(lineNo, numberOfBuses);
+        ZTMAPIResult results2 = createZTMResult(lineNo, numberOfBuses2);
+        when(mockedZtmService.getBuses(any()))
+                .thenReturn(Observable.just(results1), Observable.just(results2));
+    }
+
+    private ZTMAPIResult createZTMResult(String lineNo, int numberOfBuses) {
         List<ZTMAPILine> lines =  IntStream.rangeClosed(1, numberOfBuses)
-                .mapToObj(i -> createZTMResult(lineNo, i))
+                .mapToObj(i -> createZTMLine(lineNo, i))
                 .collect(Collectors.toList());
 
         ZTMAPIResult results = new ZTMAPIResult();
         lines.forEach(line -> results.addLine(line));
-
-        when(mockedZtmService.getBuses(any()))
-                .thenReturn((Observable.just(results)));
+        return results;
     }
 
-    private ZTMAPILine createZTMResult(String lineNo, int i) {
+    private ZTMAPILine createZTMLine(String lineNo, int i) {
         return new ZTMAPILine(
                 52.22977,
                 21.01178,
