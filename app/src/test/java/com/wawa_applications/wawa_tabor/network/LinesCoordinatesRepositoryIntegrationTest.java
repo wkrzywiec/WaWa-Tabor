@@ -27,7 +27,7 @@ public class LinesCoordinatesRepositoryIntegrationTest {
 //    @Test
 //    public void givenCorrectBusNo_whenCallForBus_thenReceiveResponse() throws IOException {
 //
-//        Observable<ZTMAPIResult> ztmapiResultObservablebuses = repository.getBuses("131");
+//        Observable<ApiResult> ztmapiResultObservablebuses = repository.getBuses("131");
 //
 //        assertNotNull(ztmapiResultObservablebuses);
 //        assertTrue(ztmapiResultObservablebuses.blockingFirst()
@@ -37,14 +37,14 @@ public class LinesCoordinatesRepositoryIntegrationTest {
 //    @Test
 //    public void givenInCorrectBusNo_whenCallForBus_thenGetNoLines(){
 //        //given & when & then
-//        Observable<ZTMAPIResult> busesObservable = repository.getBuses("Ac2");
+//        Observable<ApiResult> busesObservable = repository.getBuses("Ac2");
 //        assertTrue(busesObservable.blockingFirst().getLinesList().size() == 0);
 //    }
 //
 //    @Test
 //    public void givenCorrectTramNo_whenCallForTram_thenReceiveResponse() throws IOException {
 //
-//        Observable<ZTMAPIResult> ztmapiResultObservableTrams = repository.getTrams("17");
+//        Observable<ApiResult> ztmapiResultObservableTrams = repository.getTrams("17");
 //
 //        assertNotNull(ztmapiResultObservableTrams);
 //        assertTrue(ztmapiResultObservableTrams.blockingFirst()
@@ -54,7 +54,7 @@ public class LinesCoordinatesRepositoryIntegrationTest {
 //    @Test
 //    public void givenInCorrectTramNo_whenCallForTrams_thenGetNoLines(){
 //        //given & when & then
-//        Observable<ZTMAPIResult> tramsObservable = repository.getBuses("Ac2");
+//        Observable<ApiResult> tramsObservable = repository.getBuses("Ac2");
 //        assertTrue(tramsObservable.blockingFirst().getLinesList().size() == 0);
 //    }
 }

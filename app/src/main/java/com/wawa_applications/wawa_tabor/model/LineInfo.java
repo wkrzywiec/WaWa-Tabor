@@ -1,4 +1,4 @@
-package com.wawa_applications.wawa_tabor.network.retrofit.model;
+package com.wawa_applications.wawa_tabor.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ZTMAPILine {
+public class LineInfo {
 
     @Expose
     @SerializedName("Lat")
@@ -30,7 +30,7 @@ public class ZTMAPILine {
     @SerializedName("Brigade")
     private String brigade;
 
-    public ZTMAPILine(Double lat, Double lon, String time, String line, String brigade) {
+    public LineInfo(Double lat, Double lon, String time, String line, String brigade) {
         this.lat = lat;
         this.lon = lon;
         this.time = time;

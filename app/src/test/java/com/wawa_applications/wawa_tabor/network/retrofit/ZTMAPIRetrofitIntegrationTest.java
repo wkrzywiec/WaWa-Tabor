@@ -1,6 +1,6 @@
 package com.wawa_applications.wawa_tabor.network.retrofit;
 
-import com.wawa_applications.wawa_tabor.network.retrofit.model.ZTMAPIResult;
+import com.wawa_applications.wawa_tabor.model.ApiResult;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -39,36 +38,36 @@ public class ZTMAPIRetrofitIntegrationTest {
     @Test
     public void givenCorrectBusNo_whenCallAPI_thenReceiveResponse() throws IOException{
 
-        Observable<ZTMAPIResult> resultObservable = service.getBuses("131");
+        Observable<ApiResult> resultObservable = service.getBuses("131");
 
-        ZTMAPIResult result = resultObservable.blockingFirst();
+        ApiResult result = resultObservable.blockingFirst();
         assertTrue(result.getLinesList().size() > 0);
     }
 
     @Test
     public void givenInCorrectBusNo_whenCallAPI_thenReceiveEmptyResponse() throws IOException{
 
-        Observable<ZTMAPIResult> resultObservable = service.getBuses("ABC");
+        Observable<ApiResult> resultObservable = service.getBuses("ABC");
 
-        ZTMAPIResult result = resultObservable.blockingFirst();
+        ApiResult result = resultObservable.blockingFirst();
         assertTrue(result.getLinesList().size() == 0);
     }
 
     @Test
     public void givenCorrectTramNo_whenCallAPI_thenReceiveResponse() throws IOException{
 
-        Observable<ZTMAPIResult> resultObservable = service.getTrams("18");
+        Observable<ApiResult> resultObservable = service.getTrams("18");
 
-        ZTMAPIResult result = resultObservable.blockingFirst();
+        ApiResult result = resultObservable.blockingFirst();
         assertTrue(result.getLinesList().size() > 0);
     }
 
     @Test
     public void givenInCorrectTramNo_whenCallAPI_thenReceiveEmptyResponse() throws IOException{
 
-        Observable<ZTMAPIResult> resultObservable = service.getTrams( "ABC");
+        Observable<ApiResult> resultObservable = service.getTrams( "ABC");
 
-        ZTMAPIResult result = resultObservable.blockingFirst();
+        ApiResult result = resultObservable.blockingFirst();
         assertTrue(result.getLinesList().size() == 0);
     }
 

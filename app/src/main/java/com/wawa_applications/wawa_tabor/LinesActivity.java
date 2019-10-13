@@ -16,15 +16,13 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wawa_applications.wawa_tabor.data.TransportContract;
 import com.wawa_applications.wawa_tabor.data.dto.TransportInfoDTO;
-import com.wawa_applications.wawa_tabor.network.retrofit.model.ZTMAPILine;
-import com.wawa_applications.wawa_tabor.sync.DataSyncUtils;
+import com.wawa_applications.wawa_tabor.model.LineInfo;
 import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
 
 
@@ -39,8 +37,6 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.stream.Collectors;
-
-import static android.content.ContentValues.TAG;
 
 public class LinesActivity extends AppCompatActivity implements  LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -99,7 +95,7 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
         });
 
         viewModel.getTransportList().observe(this, transportList -> {
-            Log.d("ZTM API call: ", transportList.stream().map(ZTMAPILine::toString).collect(Collectors.joining("||")));
+            Log.d("ZTM API call: ", transportList.stream().map(LineInfo::toString).collect(Collectors.joining("||")));
         });
     }
 

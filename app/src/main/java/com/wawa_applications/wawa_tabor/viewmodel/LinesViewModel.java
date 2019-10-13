@@ -5,9 +5,9 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 
+import com.wawa_applications.wawa_tabor.model.ApiResult;
 import com.wawa_applications.wawa_tabor.network.retrofit.ZTMAPIService;
-import com.wawa_applications.wawa_tabor.network.retrofit.model.ZTMAPILine;
-import com.wawa_applications.wawa_tabor.network.retrofit.model.ZTMAPIResult;
+import com.wawa_applications.wawa_tabor.model.LineInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LinesViewModel extends ViewModel {
 
     private MutableLiveData<String> lineNo;
-    private MutableLiveData<List<ZTMAPILine>> transportList;
+    private MutableLiveData<List<LineInfo>> transportList;
     private ZTMAPIService ztmService;
     CompositeDisposable compositeDisposable;
 
@@ -47,7 +47,7 @@ public class LinesViewModel extends ViewModel {
         return lineNo;
     }
 
-    public LiveData<List<ZTMAPILine>> getTransportList(){
+    public LiveData<List<LineInfo>> getTransportList(){
 
         if (transportList == null){
             createMutableLiveData();
@@ -74,15 +74,15 @@ public class LinesViewModel extends ViewModel {
         compositeDisposable.dispose();
     }
 
-    private void handleResult(ZTMAPIResult ztmapiResult){
+    private void handleResult(ApiResult apiResult){
         if (transportList == null){
             createMutableLiveData();
         }
-        transportList.postValue(ztmapiResult.getLinesList());
+        transportList.postValue(apiResult.getLinesList());
     }
 
     private void createMutableLiveData() {
         transportList = new MutableLiveData<>();
-        transportList.setValue(new ArrayList<ZTMAPILine>());
+        transportList.setValue(new ArrayList<LineInfo>());
     }
 }
