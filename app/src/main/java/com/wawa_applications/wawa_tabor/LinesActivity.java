@@ -3,13 +3,9 @@ package com.wawa_applications.wawa_tabor;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 
-import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,7 +16,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.wawa_applications.wawa_tabor.data.TransportContract;
 import com.wawa_applications.wawa_tabor.data.dto.TransportInfoDTO;
 import com.wawa_applications.wawa_tabor.model.Line;
 import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
@@ -36,19 +31,15 @@ import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
-public class LinesActivity extends AppCompatActivity implements  LoaderManager.LoaderCallbacks<Cursor> {
+public class LinesActivity extends AppCompatActivity {
 
-    private Context mContext = null;
-    private MapView mapView = null;
-    private MyLocationNewOverlay mLocationOverlay = null;
-
+    private Context mContext;
+    private MapView mapView;
+    private MyLocationNewOverlay mLocationOverlay;
     private String mDisplayedLine;
-
-    private static final int ID_LOADER = 88;
     private int lineType;
-
     private EditText mLineTextView;
     private LinesViewModel viewModel;
 
@@ -87,135 +78,46 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
 
         viewModel.getLineListLiveData().observe(this, list -> {
            list.forEach(item -> Log.d("Dane autobusu: ", item.toString()));
+           mapView.getOverlays().clear();
+           addLineMarkersOntoMap(list);
         });
 
         viewModel.getLineNoLiveData().observe(this, line -> {
             Toast toast = Toast.makeText(this, "Pobieranie danych dla lini: " + mDisplayedLine, Toast.LENGTH_LONG);
             toast.show();
         });
-
-        viewModel.getLineListLiveData().observe(this, transportList -> {
-            Log.d("ZTM API call: ", transportList.stream().map(Line::toString).collect(Collectors.joining("||")));
-        });
     }
 
+    @Override
     public void onResume(){
-
         super.onResume();
         mapView.onResume();
     }
 
     @Override
     protected void onPause() {
-
         super.onPause();
         mapView.onPause();
-
         viewModel.unSubscribeBus();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         viewModel.unSubscribeBus();
-        getContentResolver().delete(
-                TransportContract.TransportEntry.TABLE_URI,
-                null,
-                null
-        );
     }
 
     public void setDisplayedLine(View view){
         mDisplayedLine = mLineTextView.getText().toString();
-
         mDisplayedLine.toUpperCase();
-
         viewModel.subscribeBus(mDisplayedLine);
 
         Toast toast = Toast.makeText(this, "Pobieranie danych dla lini: " + mDisplayedLine, Toast.LENGTH_LONG);
         toast.show();
-
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
-
-        String selection = TransportContract.TransportEntry.COLUMN_LINE + "= '" + mDisplayedLine + "' ";
-
-    switch (loaderId) {
-        case ID_LOADER:
-            return new CursorLoader(
-                    this,
-                    TransportContract.TransportEntry.TABLE_URI,
-                    null,
-                    selection,
-                    null,
-                    null);
-        default:
-            throw new RuntimeException("Loader Not Implemented: " + loaderId);
-    }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-        if (data.getCount() != 0){
-
-            mapView.getOverlays().clear();
-            data.moveToFirst();
-
-            do {
-
-                double lat = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LAT));
-                double lon = data.getDouble(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LON));
-
-                TransportInfoDTO infoDTO = new TransportInfoDTO(
-                            data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_LINE)),
-                            data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_BRIGADE)),
-                            data.getString(data.getColumnIndex(TransportContract.TransportEntry.COLUMN_TIME)));
-
-
-                Marker marker = new Marker(mapView);
-                marker.setPosition(new GeoPoint(lat, lon));
-
-                Drawable markerIcon;
-                if (lineType == 1) {
-                    markerIcon = this.getResources().getDrawable(R.drawable.ic_bus);
-                } else {
-                    markerIcon = this.getResources().getDrawable(R.drawable.ic_tram);
-                }
-                marker.setIcon(markerIcon);
-                marker.setTitle(infoDTO.getLine());
-                marker.setSnippet("Brygada: " + infoDTO.getBrigade());
-                marker.setSubDescription("Czas: " +infoDTO.getTime());
-
-                marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
-
-                    @Override
-                    public boolean onMarkerClick(Marker marker, MapView mapView) {
-                        marker.showInfoWindow();
-                        return true;
-                    }
-                });
-
-                mapView.getOverlays().add(marker);
-
-
-            } while (data.moveToNext());
-            mapView.invalidate();
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mapView.getOverlays().clear();
     }
 
     private void onCreatePrepareMap() {
-
         mapView.setTileSource(TileSourceFactory.MAPNIK);
-
         mapView.setBuiltInZoomControls(true);
         mapView.setMultiTouchControls(true);
 
@@ -245,5 +147,44 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
         mapView.getOverlays().add(this.mLocationOverlay);
     }
 
+    private void addLineMarkersOntoMap(List<Line> lineList) {
+        lineList.forEach(
+                line -> {
+
+                    TransportInfoDTO infoDTO =
+                            TransportInfoDTO.builder()
+                                .line(line.getLine())
+                                .brigade(line.getBrigade())
+                                .time(line.getTime())
+                                .build();
+
+                    Marker marker = new Marker(mapView);
+                    marker.setPosition(new GeoPoint(line.getLat(), line.getLon()));
+
+                    Drawable markerIcon;
+                    if (lineType == 1) {
+                        markerIcon = this.getResources().getDrawable(R.drawable.ic_bus);
+                    } else {
+                        markerIcon = this.getResources().getDrawable(R.drawable.ic_tram);
+                    }
+                    marker.setIcon(markerIcon);
+                    marker.setTitle(infoDTO.getLine());
+                    marker.setSnippet("Brygada: " + infoDTO.getBrigade());
+                    marker.setSubDescription("Czas: " +infoDTO.getTime());
+
+                    marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+
+                        @Override
+                        public boolean onMarkerClick(Marker marker, MapView mapView) {
+                            marker.showInfoWindow();
+                            return true;
+                        }
+                    });
+
+                    mapView.getOverlays().add(marker);
+                }
+        );
+        mapView.invalidate();
+    }
 }
 

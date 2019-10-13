@@ -45,7 +45,7 @@ public class LinesViewModel extends ViewModel {
 
         Disposable disposable = Observable.interval(15, TimeUnit.SECONDS)
                 .flatMap(n -> repository.getBuses(line))
-                .doOnError(error -> Log.d("Coś się stało w RxJava", error.getMessage()))
+                .doOnError(error -> Log.d("Error in class " + this.getClass().getName(), error.getMessage()))
                 .subscribe(this::handleResult);
 
         compositeDisposable.add(disposable);
@@ -76,6 +76,5 @@ public class LinesViewModel extends ViewModel {
             lineListLiveData = new MutableLiveData<>();
             lineListLiveData.setValue(new ArrayList<>());
         }
-
     }
 }
