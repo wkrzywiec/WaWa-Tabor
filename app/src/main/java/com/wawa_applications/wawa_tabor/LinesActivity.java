@@ -52,7 +52,6 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
 
     private static final int ID_LOADER = 88;
     private int lineType;
-    private boolean isDataSyncStarted = false;
 
     private EditText mLineTextView;
     private LinesViewModel viewModel;
@@ -89,9 +88,12 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
         });
 
         viewModel = ViewModelProviders.of(this).get(LinesViewModel.class);
-        viewModel.getLineNo().observe(this, line -> {
-            viewModel.subscribeBus(line);
 
+        viewModel.getTransportList().observe(this, list -> {
+           list.forEach(item -> Log.d("Dane autobusu: ", item.toString()));
+        });
+
+        viewModel.getLineNo().observe(this, line -> {
             Toast toast = Toast.makeText(this, "Pobieranie danych dla lini: " + mDisplayedLine, Toast.LENGTH_LONG);
             toast.show();
         });
@@ -114,8 +116,6 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
         mapView.onPause();
 
         viewModel.unSubscribeBus();
-        if (isDataSyncStarted)
-            DataSyncUtils.cancelScheduledJob();
     }
 
     @Override
@@ -135,18 +135,7 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
 
         mDisplayedLine.toUpperCase();
 
-        if(isDataSyncStarted){
-            Log.v(TAG, "Job has finished? " + String.valueOf(DataSyncUtils.cancelScheduledJob()));
-        }
-
-        isDataSyncStarted = true;
-
-        DataSyncUtils.initialize(this, lineType, mDisplayedLine);
-
-        getSupportLoaderManager().restartLoader(ID_LOADER, null, this);
-
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        viewModel.subscribeBus(mDisplayedLine);
 
         Toast toast = Toast.makeText(this, "Pobieranie danych dla lini: " + mDisplayedLine, Toast.LENGTH_LONG);
         toast.show();
