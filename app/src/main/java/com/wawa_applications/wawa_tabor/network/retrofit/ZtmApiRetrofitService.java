@@ -6,7 +6,7 @@ import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface ZTMAPIService {
+public interface ZtmApiRetrofitService {
 
     String URL = "https://api.um.warszawa.pl";
 

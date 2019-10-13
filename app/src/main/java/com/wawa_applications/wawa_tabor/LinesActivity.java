@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.wawa_applications.wawa_tabor.data.TransportContract;
 import com.wawa_applications.wawa_tabor.data.dto.TransportInfoDTO;
-import com.wawa_applications.wawa_tabor.model.LineInfo;
+import com.wawa_applications.wawa_tabor.model.Line;
 import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
 
 
@@ -85,17 +85,17 @@ public class LinesActivity extends AppCompatActivity implements  LoaderManager.L
 
         viewModel = ViewModelProviders.of(this).get(LinesViewModel.class);
 
-        viewModel.getTransportList().observe(this, list -> {
+        viewModel.getLineListLiveData().observe(this, list -> {
            list.forEach(item -> Log.d("Dane autobusu: ", item.toString()));
         });
 
-        viewModel.getLineNo().observe(this, line -> {
+        viewModel.getLineNoLiveData().observe(this, line -> {
             Toast toast = Toast.makeText(this, "Pobieranie danych dla lini: " + mDisplayedLine, Toast.LENGTH_LONG);
             toast.show();
         });
 
-        viewModel.getTransportList().observe(this, transportList -> {
-            Log.d("ZTM API call: ", transportList.stream().map(LineInfo::toString).collect(Collectors.joining("||")));
+        viewModel.getLineListLiveData().observe(this, transportList -> {
+            Log.d("ZTM API call: ", transportList.stream().map(Line::toString).collect(Collectors.joining("||")));
         });
     }
 

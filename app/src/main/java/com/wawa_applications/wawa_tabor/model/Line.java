@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class LineInfo {
+public class Line {
 
     @Expose
     @SerializedName("Lat")
@@ -30,7 +30,7 @@ public class LineInfo {
     @SerializedName("Brigade")
     private String brigade;
 
-    public LineInfo(Double lat, Double lon, String time, String line, String brigade) {
+    public Line(Double lat, Double lon, String time, String line, String brigade) {
         this.lat = lat;
         this.lon = lon;
         this.time = time;

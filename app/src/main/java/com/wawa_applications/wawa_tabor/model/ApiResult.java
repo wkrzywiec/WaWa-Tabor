@@ -13,11 +13,11 @@ public class ApiResult {
 
     @SerializedName("result")
     @Expose
-    private List<LineInfo> linesList = new ArrayList<LineInfo>();
+    private List<Line> linesList = new ArrayList<Line>();
 
-    public void addLine(LineInfo line){
+    public void addLine(Line line){
 
-        if (linesList == null) linesList = new ArrayList<LineInfo>();
+        if (linesList == null) linesList = new ArrayList<Line>();
         linesList.add(line);
     }
 }

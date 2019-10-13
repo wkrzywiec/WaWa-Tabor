@@ -22,17 +22,17 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(JUnit4.class)
 public class ZTMAPIRetrofitIntegrationTest {
 
-    private ZTMAPIService service;
+    private ZtmApiRetrofitService service;
 
     @Before
     public void setUp() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ZTMAPIService.URL)
+                .baseUrl(ZtmApiRetrofitService.URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(provideOkHttpClient())
                 .build();
-        service = retrofit.create(ZTMAPIService.class);
+        service = retrofit.create(ZtmApiRetrofitService.class);
     }
 
     @Test

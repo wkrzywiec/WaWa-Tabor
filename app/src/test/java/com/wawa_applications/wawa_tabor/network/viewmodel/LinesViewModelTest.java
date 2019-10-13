@@ -3,8 +3,8 @@ package com.wawa_applications.wawa_tabor.network.viewmodel;
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.lifecycle.LiveData;
 
-import com.wawa_applications.wawa_tabor.network.retrofit.ZTMAPIService;
-import com.wawa_applications.wawa_tabor.model.LineInfo;
+import com.wawa_applications.wawa_tabor.network.retrofit.ZtmApiRetrofitService;
+import com.wawa_applications.wawa_tabor.model.Line;
 import com.wawa_applications.wawa_tabor.model.ApiResult;
 import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
 
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 public class LinesViewModelTest {
 
     @Mock( name = "ztmService")
-    private ZTMAPIService mockedZtmService;
+    private ZtmApiRetrofitService mockedZtmService;
 
     @InjectMocks
     private LinesViewModel linesViewModel;
@@ -58,7 +58,7 @@ public class LinesViewModelTest {
     @Test
     public void whenNoBusesAvailable_thenReturnEmptyList() {
         // when
-        LiveData<List<LineInfo>> transportList = linesViewModel.getTransportList();
+        LiveData<List<Line>> transportList = linesViewModel.getLineListLiveData();
 
         // then
         assertEquals(0, transportList.getValue().size());
@@ -72,7 +72,7 @@ public class LinesViewModelTest {
         //when
         linesViewModel.subscribeBus("180");
         testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
-        LiveData<List<LineInfo>> transportList = linesViewModel.getTransportList();
+        LiveData<List<Line>> transportList = linesViewModel.getLineListLiveData();
 
         //then
        assertEquals(2, transportList.getValue().size());
@@ -87,11 +87,11 @@ public class LinesViewModelTest {
         linesViewModel.subscribeBus("180");
 
         testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
-        LiveData<List<LineInfo>> transportList1 = linesViewModel.getTransportList();
+        LiveData<List<Line>> transportList1 = linesViewModel.getLineListLiveData();
         assertEquals(2, transportList1.getValue().size());
 
         testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
-        LiveData<List<LineInfo>> transportList2 = linesViewModel.getTransportList();
+        LiveData<List<Line>> transportList2 = linesViewModel.getLineListLiveData();
         assertEquals(3, transportList2.getValue().size());
 
 
@@ -111,7 +111,7 @@ public class LinesViewModelTest {
     }
 
     private ApiResult createZTMResult(String lineNo, int numberOfBuses) {
-        List<LineInfo> lines =  IntStream.rangeClosed(1, numberOfBuses)
+        List<Line> lines =  IntStream.rangeClosed(1, numberOfBuses)
                 .mapToObj(i -> createZTMLine(lineNo, i))
                 .collect(Collectors.toList());
 
@@ -120,8 +120,8 @@ public class LinesViewModelTest {
         return results;
     }
 
-    private LineInfo createZTMLine(String lineNo, int i) {
-        return new LineInfo(
+    private Line createZTMLine(String lineNo, int i) {
+        return new Line(
                 52.22977,
                 21.01178,
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
