@@ -19,4 +19,10 @@
     <string name="line_type">line_type</string>
     <string name="line_number">line_number</string>
 
+    <string name="ztm_api_key" templateMergeStrategy="preserve" translatable="false">
+        YOUR API KEY
+    </string>
+    <string name="ztm_api_resource" templateMergeStrategy="preserve" translatable="false">
+        f2e5503e-927d-4ad3-9500-4ab9e55deb59
+    </string>
 </resources>
