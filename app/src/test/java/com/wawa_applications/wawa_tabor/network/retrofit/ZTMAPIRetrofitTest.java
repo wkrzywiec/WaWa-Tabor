@@ -27,7 +27,7 @@ public class ZTMAPIRetrofitTest {
 
     private final MockWebServer server = new MockWebServer();
     private Gson gson;
-    private ZtmApiClient service;
+    private ZtmApiClient apiClient;
 
     @Before
     public void setUp(){
@@ -36,7 +36,7 @@ public class ZTMAPIRetrofitTest {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
-        service = retrofit.create(ZtmApiClient.class);
+        apiClient = retrofit.create(ZtmApiClient.class);
         gson = new Gson();
     }
 
@@ -48,7 +48,7 @@ public class ZTMAPIRetrofitTest {
         exampleResult.addLine(exampleLine);
         server.enqueue(new MockResponse().setBody(gson.toJson(exampleResult)));
         //when
-        Observable<ApiResult> busObservable = service.getBuses("key","131");
+        Observable<ApiResult> busObservable = apiClient.getBuses("key","131");
         ApiResult result =  busObservable.blockingFirst();
         //then
         assertEquals( exampleResult,result);
@@ -60,7 +60,7 @@ public class ZTMAPIRetrofitTest {
         String errorResponse = "{ \"result\": [] }";
         server.enqueue(new MockResponse().setBody(errorResponse));
         //when
-        Observable<ApiResult> busObservable = service.getBuses("key","ABC");
+        Observable<ApiResult> busObservable = apiClient.getBuses("key","ABC");
         ApiResult result =  busObservable.blockingFirst();
         //then
         assertEquals(new ArrayList<Line>(),result.getLinesList());
@@ -74,7 +74,7 @@ public class ZTMAPIRetrofitTest {
         exampleResult.addLine(exampleLine);
         server.enqueue(new MockResponse().setBody(gson.toJson(exampleResult)));
         //when
-        Observable<ApiResult> tramObservable = service.getTrams( "key","11");
+        Observable<ApiResult> tramObservable = apiClient.getTrams( "key","11");
         ApiResult result =  tramObservable.blockingFirst();
         //then
         assertEquals( exampleResult,result);
@@ -86,7 +86,7 @@ public class ZTMAPIRetrofitTest {
         String errorResponse = "{ \"result\": [] }";
         server.enqueue(new MockResponse().setBody(errorResponse));
         //when
-        Observable<ApiResult> busObservable = service.getTrams("key","ABC");
+        Observable<ApiResult> busObservable = apiClient.getTrams("key","ABC");
         ApiResult result =  busObservable.blockingFirst();
         //then
         assertEquals(new ArrayList<Line>(),result.getLinesList());

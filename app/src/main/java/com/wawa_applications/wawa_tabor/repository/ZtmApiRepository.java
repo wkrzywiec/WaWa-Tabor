@@ -10,8 +10,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ZtmApiRepository {
 
-    private ZtmApiClient ztmService;
-    private final String API_KEY = "PUT_YOUR KEY";
+    private ZtmApiClient apiClient;
+    private final String API_KEY = "";
 
     public ZtmApiRepository() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -19,14 +19,14 @@ public class ZtmApiRepository {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
-        ztmService = retrofit.create(ZtmApiClient.class);
+        apiClient = retrofit.create(ZtmApiClient.class);
     }
 
     public Observable<ApiResult> getBuses(String lineNo) {
-        return ztmService.getBuses(API_KEY, lineNo);
+        return apiClient.getBuses(API_KEY, lineNo);
     }
 
     public Observable<ApiResult> getTrams(String lineNo) {
-        return ztmService.getTrams(API_KEY, lineNo);
+        return apiClient.getTrams(API_KEY, lineNo);
     }
 }

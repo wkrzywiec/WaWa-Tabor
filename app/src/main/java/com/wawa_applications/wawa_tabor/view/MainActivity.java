@@ -1,10 +1,12 @@
-package com.wawa_applications.wawa_tabor;
+package com.wawa_applications.wawa_tabor.view;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import com.wawa_applications.wawa_tabor.R;
 
 public class MainActivity extends AppCompatActivity {
 

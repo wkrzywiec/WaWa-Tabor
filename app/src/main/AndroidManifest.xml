@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,12 +23,12 @@
         </activity>
 
         <activity
-            android:name=".LinesActivity"
+            android:name=".view.LinesActivity"
             android:label="@string/title_activity_buses"
-            android:parentActivityName="com.wawa_applications.wawa_tabor.MainActivity">
+            android:parentActivityName="com.wawa_applications.wawa_tabor.view.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.wawa_applications.wawa_tabor.MainActivity" />
+                android:value="com.wawa_applications.wawa_tabor.view.MainActivity" />
         </activity>
 
     </application>
