@@ -25,9 +25,11 @@ public class LinesActivity extends AppCompatActivity {
     private MapHelper mapHelper;
     private Drawable lineMarkerIcon;
 
+    private int lineType;
     private String mDisplayedLine;
     private EditText mLineTextView;
     private LinesViewModel viewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,14 +82,14 @@ public class LinesActivity extends AppCompatActivity {
     public void setDisplayedLine(View view){
         mDisplayedLine = mLineTextView.getText().toString();
         mDisplayedLine.toUpperCase();
-        viewModel.subscribeBus(mDisplayedLine);
+        viewModel.subscribeBus(mDisplayedLine, lineType);
 
         Toast toast = Toast.makeText(this, "Pobieranie danych dla lini: " + mDisplayedLine, Toast.LENGTH_LONG);
         toast.show();
     }
 
     private void chooseLineActivityLayout() {
-        int lineType = getIntent().getIntExtra(getString(R.string.line_type), 1);
+        lineType = getIntent().getIntExtra(getString(R.string.line_type), 1);
         if (lineType == 1) {
             setContentView(R.layout.activity_buses);
             lineMarkerIcon = this.getResources().getDrawable(R.drawable.ic_bus);

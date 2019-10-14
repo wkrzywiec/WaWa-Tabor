@@ -39,12 +39,12 @@ public class LinesViewModel extends ViewModel {
         return lineListLiveData;
     }
 
-    public void subscribeBus(String line) {
+    public void subscribeBus(String line, int lineType) {
 
         setLineNoLiveData(line);
 
         Disposable disposable = Observable.interval(15, TimeUnit.SECONDS)
-                .flatMap(n -> repository.getBuses(line))
+                .flatMap(n -> getLines(line, lineType))
                 .doOnError(error -> Log.d("Error in class " + this.getClass().getName(), error.getMessage()))
                 .subscribe(this::handleResult);
 
@@ -53,6 +53,14 @@ public class LinesViewModel extends ViewModel {
 
     public void unSubscribeBus() {
         compositeDisposable.dispose();
+    }
+
+    private Observable<ApiResult> getLines(String line, int lineType) {
+        if (lineType == 1){
+            return repository.getBuses(line);
+        } else {
+            return repository.getTrams(line);
+        }
     }
 
     private void handleResult(ApiResult apiResult){
