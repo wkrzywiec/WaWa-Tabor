@@ -1,4 +1,4 @@
-package com.wawa_applications.wawa_tabor.network.exception;
+package com.wawa_applications.wawa_tabor.exception;
 
 public class BusNotFoundException extends RuntimeException {
 

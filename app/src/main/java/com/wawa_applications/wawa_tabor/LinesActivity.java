@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.wawa_applications.wawa_tabor.data.dto.TransportInfoDTO;
+import com.wawa_applications.wawa_tabor.model.TransportInfoDTO;
 import com.wawa_applications.wawa_tabor.model.Line;
 import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
 

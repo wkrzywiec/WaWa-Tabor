@@ -3,7 +3,7 @@ package com.wawa_applications.wawa_tabor.network.viewmodel;
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.lifecycle.LiveData;
 
-import com.wawa_applications.wawa_tabor.network.retrofit.ZtmApiRetrofitService;
+import com.wawa_applications.wawa_tabor.network.ZtmApiClient;
 import com.wawa_applications.wawa_tabor.model.Line;
 import com.wawa_applications.wawa_tabor.model.ApiResult;
 import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 public class LinesViewModelTest {
 
     @Mock( name = "ztmService")
-    private ZtmApiRetrofitService mockedZtmService;
+    private ZtmApiClient mockedZtmService;
 
     @InjectMocks
     private LinesViewModel linesViewModel;
@@ -99,14 +99,14 @@ public class LinesViewModelTest {
 
     private void mockZTMResults(String lineNo, int numberOfBuses) {
         ApiResult results = createZTMResult(lineNo, numberOfBuses);
-        when(mockedZtmService.getBuses(any()))
+        when(mockedZtmService.getBuses(any(), any()))
                 .thenReturn(Observable.just(results));
     }
 
     private void mock2ZTMResults(String lineNo, int numberOfBuses, int numberOfBuses2) {
         ApiResult results1 = createZTMResult(lineNo, numberOfBuses);
         ApiResult results2 = createZTMResult(lineNo, numberOfBuses2);
-        when(mockedZtmService.getBuses(any()))
+        when(mockedZtmService.getBuses(any(), any()))
                 .thenReturn(Observable.just(results1), Observable.just(results2));
     }
 

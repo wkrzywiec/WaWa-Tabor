@@ -1,6 +1,7 @@
 package com.wawa_applications.wawa_tabor.network.retrofit;
 
 import com.wawa_applications.wawa_tabor.model.ApiResult;
+import com.wawa_applications.wawa_tabor.network.ZtmApiClient;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,23 +23,23 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(JUnit4.class)
 public class ZTMAPIRetrofitIntegrationTest {
 
-    private ZtmApiRetrofitService service;
+    private ZtmApiClient service;
 
     @Before
     public void setUp() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ZtmApiRetrofitService.URL)
+                .baseUrl(ZtmApiClient.URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(provideOkHttpClient())
                 .build();
-        service = retrofit.create(ZtmApiRetrofitService.class);
+        service = retrofit.create(ZtmApiClient.class);
     }
 
     @Test
     public void givenCorrectBusNo_whenCallAPI_thenReceiveResponse() throws IOException{
 
-        Observable<ApiResult> resultObservable = service.getBuses("131");
+        Observable<ApiResult> resultObservable = service.getBuses("key", "131");
 
         ApiResult result = resultObservable.blockingFirst();
         assertTrue(result.getLinesList().size() > 0);
@@ -47,7 +48,7 @@ public class ZTMAPIRetrofitIntegrationTest {
     @Test
     public void givenInCorrectBusNo_whenCallAPI_thenReceiveEmptyResponse() throws IOException{
 
-        Observable<ApiResult> resultObservable = service.getBuses("ABC");
+        Observable<ApiResult> resultObservable = service.getBuses("key","ABC");
 
         ApiResult result = resultObservable.blockingFirst();
         assertTrue(result.getLinesList().size() == 0);
@@ -56,7 +57,7 @@ public class ZTMAPIRetrofitIntegrationTest {
     @Test
     public void givenCorrectTramNo_whenCallAPI_thenReceiveResponse() throws IOException{
 
-        Observable<ApiResult> resultObservable = service.getTrams("18");
+        Observable<ApiResult> resultObservable = service.getTrams("key","18");
 
         ApiResult result = resultObservable.blockingFirst();
         assertTrue(result.getLinesList().size() > 0);
@@ -65,7 +66,7 @@ public class ZTMAPIRetrofitIntegrationTest {
     @Test
     public void givenInCorrectTramNo_whenCallAPI_thenReceiveEmptyResponse() throws IOException{
 
-        Observable<ApiResult> resultObservable = service.getTrams( "ABC");
+        Observable<ApiResult> resultObservable = service.getTrams( "key","ABC");
 
         ApiResult result = resultObservable.blockingFirst();
         assertTrue(result.getLinesList().size() == 0);
