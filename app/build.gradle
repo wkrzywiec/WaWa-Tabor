@@ -7,19 +7,13 @@ android {
         applicationId "com.wawa_applications.wawa_tabor"
         minSdkVersion 24
         targetSdkVersion 27
-        versionCode 5
-        versionName "1.4"
+        versionCode 7
+        versionName "1.4.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         testOptions {
             unitTests.returnDefaultValues = true
         }
         multiDexEnabled true
-    }
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

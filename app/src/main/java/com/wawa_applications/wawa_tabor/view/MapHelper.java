@@ -43,12 +43,10 @@ public class MapHelper {
         lineList.forEach(
                 line -> {
 
-                    TransportInfoDTO infoDTO =
-                            TransportInfoDTO.builder()
-                                    .line(line.getLine())
-                                    .brigade(line.getBrigade())
-                                    .time(line.getTime())
-                                    .build();
+                    TransportInfoDTO infoDTO = new TransportInfoDTO();
+                    infoDTO.setLine(line.getLine());
+                    infoDTO.setBrigade(line.getBrigade());
+                    infoDTO.setTime(line.getTime());
 
                     Marker marker = new Marker(mapView);
                     marker.setPosition(new GeoPoint(line.getLat(), line.getLon()));

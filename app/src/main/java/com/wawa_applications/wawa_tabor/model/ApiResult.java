@@ -6,9 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Data;
 
-@Data
 public class ApiResult {
 
     @SerializedName("result")
@@ -19,5 +17,13 @@ public class ApiResult {
 
         if (linesList == null) linesList = new ArrayList<Line>();
         linesList.add(line);
+    }
+
+    public List<Line> getLinesList() {
+        return linesList;
+    }
+
+    public void setLinesList(List<Line> linesList) {
+        this.linesList = linesList;
     }
 }
