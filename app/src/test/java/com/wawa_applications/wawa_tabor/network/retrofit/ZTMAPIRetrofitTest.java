@@ -6,6 +6,7 @@ import com.wawa_applications.wawa_tabor.model.Line;
 import com.wawa_applications.wawa_tabor.network.ZtmApiClient;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -23,6 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static junit.framework.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
+@Ignore
 public class ZTMAPIRetrofitTest {
 
     private final MockWebServer server = new MockWebServer();

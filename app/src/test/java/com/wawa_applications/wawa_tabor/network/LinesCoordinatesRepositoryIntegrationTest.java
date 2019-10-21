@@ -3,6 +3,7 @@ package com.wawa_applications.wawa_tabor.network;
 
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -15,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
+@Ignore
 public class LinesCoordinatesRepositoryIntegrationTest {
 
 //    LinesRepository repository;
