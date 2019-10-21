@@ -70,7 +70,7 @@ public class LinesViewModelTest {
         mockZTMResults("180", 2);
 
         //when
-        linesViewModel.subscribeBus("180");
+        linesViewModel.subscribeBus("180", 1);
         testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
         LiveData<List<Line>> transportList = linesViewModel.getLineListLiveData();
 
@@ -84,7 +84,7 @@ public class LinesViewModelTest {
         mock2ZTMResults("180", 2, 3);
 
         //when
-        linesViewModel.subscribeBus("180");
+        linesViewModel.subscribeBus("180", 1);
 
         testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
         LiveData<List<Line>> transportList1 = linesViewModel.getLineListLiveData();
