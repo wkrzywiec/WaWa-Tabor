@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 @Ignore
-public class LinesCoordinatesRepositoryIntegrationTest {
+public class LinesCoordinatesRepositoryIT {
 
 //    LinesRepository repository;
 //

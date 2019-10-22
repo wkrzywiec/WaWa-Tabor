@@ -23,7 +23,7 @@ import static junit.framework.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 @Ignore
-public class ZTMAPIRetrofitIntegrationTest {
+public class ZTMAPIRetrofitIT {
 
     private ZtmApiClient service;
 
