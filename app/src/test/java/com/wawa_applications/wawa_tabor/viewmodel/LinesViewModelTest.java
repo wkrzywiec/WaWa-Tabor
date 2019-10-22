@@ -1,12 +1,11 @@
-package com.wawa_applications.wawa_tabor.network.viewmodel;
+package com.wawa_applications.wawa_tabor.viewmodel;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.lifecycle.LiveData;
 
-import com.wawa_applications.wawa_tabor.network.ZtmApiClient;
 import com.wawa_applications.wawa_tabor.model.Line;
 import com.wawa_applications.wawa_tabor.model.ApiResult;
-import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
+import com.wawa_applications.wawa_tabor.repository.ZtmApiRepository;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -36,8 +35,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class LinesViewModelTest {
 
-    @Mock( name = "ztmService")
-    private ZtmApiClient mockedZtmService;
+    @Mock( name = "repository")
+    private ZtmApiRepository mockedReposiotry;
 
     @InjectMocks
     private LinesViewModel linesViewModel;
@@ -49,7 +48,6 @@ public class LinesViewModelTest {
 
     @Before
     public void init() {
-        //linesViewModel = new LinesViewModel();
         MockitoAnnotations.initMocks(this);
         testScheduler = new TestScheduler();
         RxJavaPlugins.setComputationSchedulerHandler(scheduler -> testScheduler);
@@ -93,20 +91,18 @@ public class LinesViewModelTest {
         testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
         LiveData<List<Line>> transportList2 = linesViewModel.getLineListLiveData();
         assertEquals(3, transportList2.getValue().size());
-
-
     }
 
     private void mockZTMResults(String lineNo, int numberOfBuses) {
         ApiResult results = createZTMResult(lineNo, numberOfBuses);
-        when(mockedZtmService.getBuses(any(), any()))
+        when(mockedReposiotry.getBuses(any()))
                 .thenReturn(Observable.just(results));
     }
 
     private void mock2ZTMResults(String lineNo, int numberOfBuses, int numberOfBuses2) {
         ApiResult results1 = createZTMResult(lineNo, numberOfBuses);
         ApiResult results2 = createZTMResult(lineNo, numberOfBuses2);
-        when(mockedZtmService.getBuses(any(), any()))
+        when(mockedReposiotry.getBuses(any()))
                 .thenReturn(Observable.just(results1), Observable.just(results2));
     }
 
