@@ -1,16 +1,13 @@
-package com.wawa_applications.wawa_tabor.network.viewmodel;
+package com.wawa_applications.wawa_tabor.viewmodel;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.lifecycle.LiveData;
 
-import com.wawa_applications.wawa_tabor.network.ZtmApiClient;
 import com.wawa_applications.wawa_tabor.model.Line;
 import com.wawa_applications.wawa_tabor.model.ApiResult;
 import com.wawa_applications.wawa_tabor.repository.ZtmApiRepository;
-import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
