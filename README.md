@@ -2,7 +2,7 @@
 
 ![](https://github.com/wkrzywiec/WaWa-Tabor/workflows/Android%20Pull%20Request%20&%20Master%20CI/badge.svg)
 
-<a href='https://play.google.com/store/apps/details?id=com.wawa_applications.wawa_tabor&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='180'/></a>
+<a href='https://play.google.com/store/apps/details?id=com.wawa_applications.wawa_tabor&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='170'/></a>
 
 ## General info
 
