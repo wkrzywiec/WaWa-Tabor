@@ -18,6 +18,7 @@ sonarqube {
         property 'sonar.organization', 'wkrzywiec'
         property 'sonar.projectKey', 'wkrzywiec_WaWa-Tabor'
         property 'sonar.sources', '.'
+        property 'sonar.host.url', 'https://sonarcloud.io'
     }
 }
 
