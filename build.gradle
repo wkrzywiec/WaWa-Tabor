@@ -13,6 +13,14 @@ plugins {
     id "org.sonarqube" version "2.7.1"
 }
 
+sonarqube {
+    properties {
+        property 'sonar.organization', 'wkrzywiec'
+        property 'sonar.projectKey', 'wkrzywiec_WaWa-Tabor'
+        property 'sonar.sources', '.'
+    }
+}
+
 allprojects {
     repositories {
         jcenter()
