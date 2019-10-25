@@ -30,6 +30,8 @@ jobs:
       - uses: actions/checkout@v1
       - name: SonarCloud Scan
         run: bash ./gradlew sonarqube -Dsonar.login=${{ secrets.SONAR_TOKEN }} --stacktrace
+      - name: Link to SonarCloud Report
+        run: echo "https://sonarcloud.io/dashboard?id=wkrzywiec_WaWa-Tabor"
 
   apk:
     name: Generate APK
