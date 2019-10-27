@@ -1,17 +1,18 @@
 package com.wawa_applications.wawa_tabor.view;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.wawa_applications.wawa_tabor.R;
 import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
