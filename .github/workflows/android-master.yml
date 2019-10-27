@@ -30,6 +30,8 @@ jobs:
       - uses: actions/checkout@v1
       - name: SonarCloud Scan
         run: bash ./gradlew jacocoUnitTestReport sonarqube -Dsonar.login=${{ secrets.SONAR_TOKEN }} --stacktrace
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Link to SonarCloud Report
         run: echo "https://sonarcloud.io/dashboard?id=wkrzywiec_WaWa-Tabor"
 
