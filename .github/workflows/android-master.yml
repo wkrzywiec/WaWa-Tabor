@@ -1,4 +1,4 @@
-name: Android Pull Request & Master CI
+name: Android Master
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    name: Run Unit Tests
+    name: Unit Tests
     runs-on: ubuntu-18.04
 
     steps:
@@ -23,7 +23,7 @@ jobs:
         run: bash ./gradlew test --stacktrace
 
   sonar:
-    name: Run SonarCloud Scan
+    name: SonarCloud Scan
     runs-on: ubuntu-18.04
 
     steps:

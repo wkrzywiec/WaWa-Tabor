@@ -56,8 +56,6 @@ dependencies {
 
 task jacocoUnitTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
 
-//    $buildDir = "/build"// Location of the build directory for the build Variant
-
     def coverageSourceDirs = [
             "src/main/java"
     ]
