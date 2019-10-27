@@ -11,7 +11,6 @@ buildscript {
 
 plugins {
     id "org.sonarqube" version "2.7.1"
-    id "com.vanniktech.android.junit.jacoco" version "0.15.0"
 }
 
 sonarqube {
@@ -19,6 +18,7 @@ sonarqube {
         property 'sonar.organization', 'wkrzywiec'
         property 'sonar.projectKey', 'wkrzywiec_WaWa-Tabor'
         property 'sonar.host.url', 'https://sonarcloud.io'
+        property 'sonar.jacoco.reportPaths', 'build/jacoco/testDebugUnitTest.exec'
     }
 }
 
@@ -28,6 +28,7 @@ allprojects {
         google()
     }
 }
+
 
 task clean(type: Delete) {
     delete rootProject.buildDir
