@@ -1,7 +1,8 @@
 package com.wawa_applications.wawa_tabor.viewmodel;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
-import android.arch.lifecycle.LiveData;
+
+import androidx.lifecycle.LiveData;
 
 import com.wawa_applications.wawa_tabor.model.Line;
 import com.wawa_applications.wawa_tabor.model.ApiResult;

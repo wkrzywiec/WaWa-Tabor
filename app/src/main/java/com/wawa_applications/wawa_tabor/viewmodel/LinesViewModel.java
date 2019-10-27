@@ -1,9 +1,10 @@
 package com.wawa_applications.wawa_tabor.viewmodel;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.util.Log;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.wawa_applications.wawa_tabor.model.ApiResult;
 import com.wawa_applications.wawa_tabor.model.Line;
