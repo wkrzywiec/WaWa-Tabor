@@ -1,8 +1,5 @@
 # WaWa Tabor
 
-<a href='https://play.google.com/store/apps/details?id=com.wawa_applications.wawa_tabor&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
-<img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='250'/></a>
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)     
 ![](https://github.com/wkrzywiec/WaWa-Tabor/workflows/Android%20Master/badge.svg)
 
@@ -13,10 +10,26 @@
 
 **WaWa Tabor** is an Android app that shows current location of all buses and trams in Warsaw (Poland).
 
-All data is provided by [https://api.um.warszawa.pl/](https://api.um.warszawa.pl/) - website of Miasto Stołeczne Warszawy (City of Warsaw).
+### Download
+
+The app is available for free (without any ads) on Google Play
+
+<a href='https://play.google.com/store/apps/details?id=com.wawa_applications.wawa_tabor&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+<img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='250'/></a>
 
 
-##### MIT License
+### Blog Posts
+
+Here are some blog posts that relates to *WaWa Tabor*:
+
+* [How to fetch REST API every 2 seconds with RxJava 2](https://medium.com/@wkrzywiec/how-to-fetch-rest-api-every-2-seconds-with-rxjava-2-9289c33fd045)
+* [GitHub Actions for Android: First Approach](https://medium.com/@wkrzywiec/github-actions-for-android-first-approach-f616c24aa0f9)
+
+### License
+
+All data within an app is provided by [https://api.um.warszawa.pl/](https://api.um.warszawa.pl/) - website of Miasto Stołeczne Warszawy (City of Warsaw).
+
+**MIT License**
 
 Copyright (c) 2019 Wojciech Krzywiec
 
