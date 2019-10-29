@@ -23,6 +23,7 @@ public class LinesViewModel extends ViewModel {
     private MutableLiveData<String> lineNoLiveData;
     private MutableLiveData<List<Line>> lineListLiveData;
     private CompositeDisposable compositeDisposable;
+    private Disposable currentDisposable;
     private ZtmApiRepository repository;
 
     public LinesViewModel() {
@@ -44,12 +45,12 @@ public class LinesViewModel extends ViewModel {
 
         setLineNoLiveData(line);
 
-        Disposable disposable = Observable.interval(15, TimeUnit.SECONDS)
+        currentDisposable = Observable.interval(15, TimeUnit.SECONDS)
                 .flatMap(n -> getLines(line, lineType))
                 .doOnError(error -> Log.d("Error in class " + this.getClass().getName(), error.getMessage()))
                 .subscribe(this::handleResult);
 
-        compositeDisposable.add(disposable);
+        compositeDisposable.add(currentDisposable);
     }
 
     public void unSubscribeBus() {
@@ -65,12 +66,17 @@ public class LinesViewModel extends ViewModel {
     }
 
     private void handleResult(ApiResult apiResult){
+        Log.i("API Result", apiResult.getLinesList().toString());
         checkIfLineInfoListIsInitiated();
         lineListLiveData.postValue(apiResult.getLinesList());
     }
 
     private void setLineNoLiveData(String line) {
         checkIfLineNoIsInitiated();
+        if (lineNoLiveData.getValue() != null && !lineNoLiveData.equals(line)) {
+            Log.i("Unsubscribe", "Unsubscribe line: " + lineNoLiveData.getValue());
+            compositeDisposable.remove(currentDisposable);
+        }
         lineNoLiveData.setValue(line);
     }
 
