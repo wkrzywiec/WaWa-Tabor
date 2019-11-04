@@ -21,15 +21,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".view.LinesActivity"
-            android:label="@string/title_activity_buses"
-            android:parentActivityName="com.wawa_applications.wawa_tabor.view.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.wawa_applications.wawa_tabor.view.MainActivity" />
-        </activity>
-
     </application>
 </manifest>

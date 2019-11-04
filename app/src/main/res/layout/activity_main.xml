@@ -2,49 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:background="@color/main_background_color">
+    android:orientation="vertical">
 
-
-    <TextView
-        android:id="@+id/main_title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:fontFamily="sans-serif"
-        android:text="@string/app_name"
-        android:textColor="@color/text_title_color"
-        android:textSize="50sp"
-        android:textStyle="bold"
-        android:textAlignment="center" />
+        android:weightSum="1">
 
-    <Button
-        android:id="@+id/buses_button"
-        android:layout_width="250dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="35dp"
-        android:padding="10dp"
-        android:background="@color/buses_button_color"
-        android:onClick="openBusesActivity"
-        android:text="@string/buses_button_text"
-        android:drawableLeft="@drawable/ic_bus"
-        android:textColor="@color/buses_button_text_color"
-        android:textSize="@dimen/button_text_size" />
+        <EditText
+            android:id="@+id/edit_query"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1.00"
+            android:hint="@string/find_buses_hint_text"
+            android:imeOptions="actionDone"
+            android:singleLine="true" />
 
+        <Button
+            android:id="@+id/btnFindBus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setDisplayedLine"
+            android:text="@string/find_buses_button_text" />
+    </LinearLayout>
 
-    <Button
-        android:layout_width="250dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:padding="10dp"
-        android:background="@color/third_button_color"
-        android:onClick="openTramsActivity"
-        android:textSize="@dimen/button_text_size"
-        android:textColor="@color/third_button_text_color"
-        android:text="@string/third_button_text"
-        android:drawableLeft="@drawable/ic_tram"/>
-
+    <org.osmdroid.views.MapView android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

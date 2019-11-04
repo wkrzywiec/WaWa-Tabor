@@ -41,6 +41,19 @@ public class LinesViewModel extends ViewModel {
         return lineListLiveData;
     }
 
+    public int indicateLineType(String lineInput) {
+        String busPattern ="\\d{3}|N\\d{2}";
+        String tramPattern = "\\d{2}";
+
+        if(lineInput.matches(busPattern)) {
+            return 1;
+        } else if (lineInput.matches(tramPattern)){
+            return 2;
+        } else {
+            return 0;
+        }
+    }
+
     public void subscribeBus(String line, int lineType) {
 
         setLineNoLiveData(line);

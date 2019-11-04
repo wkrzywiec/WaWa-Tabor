@@ -94,6 +94,42 @@ public class LinesViewModelTest {
         assertEquals(3, transportList2.getValue().size());
     }
 
+    @Test
+    public void given180Line_whenTryToIndicateLineType_thenReturn1() {
+        // given & when
+        int lineType = linesViewModel.indicateLineType("180");
+
+        // then
+        assertEquals(1, lineType);
+    }
+
+    @Test
+    public void givenN83Line_whenTryToIndicateLineType_thenReturn1() {
+        // given & when
+        int lineType = linesViewModel.indicateLineType("N83");
+
+        // then
+        assertEquals(1, lineType);
+    }
+
+    @Test
+    public void given17Line_whenTryToIndicateLineType_thenReturn2() {
+        // given & when
+        int lineType = linesViewModel.indicateLineType("17");
+
+        // then
+        assertEquals(2, lineType);
+    }
+
+    @Test
+    public void givenABCLine_whenTryToIndicateLineType_thenReturn0() {
+        // given & when
+        int lineType = linesViewModel.indicateLineType("ABC");
+
+        // then
+        assertEquals(0, lineType);
+    }
+
     private void mockZTMResults(String lineNo, int numberOfBuses) {
         ApiResult results = createZTMResult(lineNo, numberOfBuses);
         when(mockedReposiotry.getBuses(any()))

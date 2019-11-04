@@ -1,39 +1,106 @@
 package com.wawa_applications.wawa_tabor.view;
 
-import android.content.Intent;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
-import android.widget.Button;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.wawa_applications.wawa_tabor.R;
+import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
+
+import org.osmdroid.config.Configuration;
+import org.osmdroid.views.MapView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private MapView mapView;
+    private MapHelper mapHelper;
+    private Drawable lineMarkerIcon;
 
-    private Button mBusesButton;
-    private int busId = 1;
-    private int tramId = 2;
+    private int lineType;
+    private String mDisplayedLine;
+    private EditText mLineTextView;
+    private LinesViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mBusesButton = (Button) findViewById(R.id.buses_button);
+        Context mContext = getApplicationContext();
+        Configuration.getInstance().load(mContext, PreferenceManager.getDefaultSharedPreferences(mContext));
+
+        mapView = findViewById(R.id.map);
+        mapHelper = new MapHelper(mapView, mContext);
+        mapHelper.onCreatePrepareMap();
+
+        mLineTextView = findViewById(R.id.edit_query);
+        mLineTextView.setOnEditorActionListener(
+                (textView, actionID, keyEvent) ->
+                        changeDisplayedLineTextViewOnAction(textView, actionID));
+
+        viewModel = ViewModelProviders.of(this).get(LinesViewModel.class);
+        viewModel.getLineListLiveData().observe(this, list -> {
+            mapView.getOverlays().clear();
+            mapHelper.addLineMarkersOntoMap(list, lineMarkerIcon);
+        });
+
+        viewModel.getLineNoLiveData().observe(this, lineNo ->
+                mDisplayedLine = lineNo
+        );
     }
 
-
-    public void openBusesActivity(View v){
-        Intent linesActivityIntent = new Intent (MainActivity.this, LinesActivity.class);
-        linesActivityIntent.putExtra(getString(R.string.line_type), busId);
-        startActivity(linesActivityIntent);
+    @Override
+    public void onResume(){
+        super.onResume();
+        mapView.onResume();
     }
 
-    public void openTramsActivity(View v){
-        Intent linesActivityIntent = new Intent (MainActivity.this, LinesActivity.class);
-        linesActivityIntent.putExtra(getString(R.string.line_type), tramId);
-        startActivity(linesActivityIntent);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause();
+        viewModel.unSubscribeBus();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        viewModel.unSubscribeBus();
+    }
+
+    public void setDisplayedLine(View view){
+        mDisplayedLine = mLineTextView.getText().toString();
+        mDisplayedLine.toUpperCase();
+        lineType = viewModel.indicateLineType(mDisplayedLine);
+        setLineTypeIcon();
+        viewModel.subscribeBus(mDisplayedLine, lineType);
+
+        Toast toast = Toast.makeText(this, "Pobieranie danych dla lini: " + mDisplayedLine, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+    private void setLineTypeIcon() {
+        if (lineType == 1) {
+            lineMarkerIcon = this.getResources().getDrawable(R.drawable.ic_bus);
+        } else {
+            lineMarkerIcon = this.getResources().getDrawable(R.drawable.ic_tram);
+        }
+    }
+
+    private boolean changeDisplayedLineTextViewOnAction(TextView textView, int actionID) {
+        if (actionID == EditorInfo.IME_ACTION_DONE) {
+            setDisplayedLine(textView);
+            return true;
+        }
+        return false;
     }
 }
