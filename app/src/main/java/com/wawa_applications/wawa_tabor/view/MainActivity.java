@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.wawa_applications.wawa_tabor.R;
 import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
 
@@ -43,9 +44,13 @@ public class MainActivity extends AppCompatActivity {
         mapHelper.onCreatePrepareMap();
 
         mLineTextView = findViewById(R.id.edit_query);
-        mLineTextView.setOnEditorActionListener(
-                (textView, actionID, keyEvent) ->
-                        changeDisplayedLineTextViewOnAction(textView, actionID));
+        TextInputLayout layout = findViewById(R.id.input_layout);
+        layout.setEndIconOnClickListener((textView) -> {
+            setDisplayedLine(textView);
+        });
+//        mLineTextView.setOnEditorActionListener(
+//                (textView, actionID, keyEvent) ->
+//                        changeDisplayedLineTextViewOnAction(textView, actionID));
 
         viewModel = ViewModelProviders.of(this).get(LinesViewModel.class);
         viewModel.getLineListLiveData().observe(this, list -> {
