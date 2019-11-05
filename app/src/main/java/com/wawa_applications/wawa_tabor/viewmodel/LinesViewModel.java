@@ -45,6 +45,8 @@ public class LinesViewModel extends ViewModel {
         String busPattern ="\\d{3}|N\\d{2}";
         String tramPattern = "\\d{2}";
 
+        lineInput = lineInput.toUpperCase();
+
         if(lineInput.matches(busPattern)) {
             return 1;
         } else if (lineInput.matches(tramPattern)){

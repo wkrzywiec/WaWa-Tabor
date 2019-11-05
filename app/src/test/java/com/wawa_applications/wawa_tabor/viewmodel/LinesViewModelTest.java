@@ -95,7 +95,7 @@ public class LinesViewModelTest {
     }
 
     @Test
-    public void given180Line_whenTryToIndicateLineType_thenReturn1() {
+    public void given180Line_whenIndicateLineType_thenReturn1() {
         // given & when
         int lineType = linesViewModel.indicateLineType("180");
 
@@ -104,7 +104,7 @@ public class LinesViewModelTest {
     }
 
     @Test
-    public void givenN83Line_whenTryToIndicateLineType_thenReturn1() {
+    public void givenN83Line_whenIndicateLineType_thenReturn1() {
         // given & when
         int lineType = linesViewModel.indicateLineType("N83");
 
@@ -113,7 +113,7 @@ public class LinesViewModelTest {
     }
 
     @Test
-    public void given17Line_whenTryToIndicateLineType_thenReturn2() {
+    public void given17Line_whenIndicateLineType_thenReturn2() {
         // given & when
         int lineType = linesViewModel.indicateLineType("17");
 
@@ -122,12 +122,21 @@ public class LinesViewModelTest {
     }
 
     @Test
-    public void givenABCLine_whenTryToIndicateLineType_thenReturn0() {
+    public void givenABCLine_whenIndicateLineType_thenReturn0() {
         // given & when
         int lineType = linesViewModel.indicateLineType("ABC");
 
         // then
         assertEquals(0, lineType);
+    }
+
+    @Test
+    public void givenn83Line_whenIndicateLineType_thenReturn1() {
+        // given & when
+        int lineType = linesViewModel.indicateLineType("n83");
+
+        // then
+        assertEquals(1, lineType);
     }
 
     private void mockZTMResults(String lineNo, int numberOfBuses) {
