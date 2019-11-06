@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="40dp"
-        android:hint="Linia"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:hint="@string/textfield_hint"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         app:endIconMode="custom"
-        app:endIconDrawable="@drawable/search">
+        app:endIconDrawable="@drawable/search"
+        app:boxBackgroundColor="@color/textfield_input_background"
+        app:boxStrokeColor="@color/textfield_border"
+        app:hintTextColor="@color/textfield_border">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_query"
@@ -24,8 +33,4 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <org.osmdroid.views.MapView android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-</LinearLayout>
+</FrameLayout>
