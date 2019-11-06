@@ -54,6 +54,10 @@ dependencies {
     })
 }
 
+tasks.matching {it instanceof Test}.all {
+    testLogging.events = ["failed", "passed", "skipped"]
+}
+
 task jacocoUnitTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
 
     def coverageSourceDirs = [
