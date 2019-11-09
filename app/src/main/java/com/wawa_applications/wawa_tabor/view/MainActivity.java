@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,12 +46,14 @@ public class MainActivity extends AppCompatActivity {
 
         mLineTextView = findViewById(R.id.edit_query);
         TextInputLayout layout = findViewById(R.id.input_layout);
+
         layout.setEndIconOnClickListener((textView) -> {
             setDisplayedLine(textView);
         });
-//        mLineTextView.setOnEditorActionListener(
-//                (textView, actionID, keyEvent) ->
-//                        changeDisplayedLineTextViewOnAction(textView, actionID));
+
+        mLineTextView.setOnEditorActionListener(
+                (textView, actionID, keyEvent) ->
+                        changeDisplayedLineTextViewOnAction(textView, actionID));
 
         viewModel = ViewModelProviders.of(this).get(LinesViewModel.class);
         viewModel.getLineListLiveData().observe(this, list -> {
@@ -83,13 +86,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setDisplayedLine(View view){
+        closeKeyboard();
         mDisplayedLine = mLineTextView.getText().toString();
-        mDisplayedLine.toUpperCase();
         lineType = viewModel.indicateLineType(mDisplayedLine);
         setLineTypeIcon();
         viewModel.subscribeBus(mDisplayedLine, lineType);
 
-        Toast toast = Toast.makeText(this, "Pobieranie danych dla lini: " + mDisplayedLine, Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(this, "Pobieranie danych dla lini: " + mDisplayedLine.toUpperCase(), Toast.LENGTH_LONG);
         toast.show();
     }
 
@@ -98,6 +101,14 @@ public class MainActivity extends AppCompatActivity {
             lineMarkerIcon = this.getResources().getDrawable(R.drawable.ic_bus);
         } else {
             lineMarkerIcon = this.getResources().getDrawable(R.drawable.ic_tram);
+        }
+    }
+
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null){
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
