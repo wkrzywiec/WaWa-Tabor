@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 import com.wawa_applications.wawa_tabor.R;
 import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
 
@@ -92,7 +93,10 @@ public class MainActivity extends AppCompatActivity {
         setLineTypeIcon();
         viewModel.subscribeBus(mDisplayedLine, lineType);
 
-        Toast toast = Toast.makeText(this, "Pobieranie danych dla lini: " + mDisplayedLine.toUpperCase(), Toast.LENGTH_LONG);
+        Toast toast = DynamicToast.make(this,
+                "Wyszukiwanie pojazdów lini: " + mDisplayedLine.toUpperCase(),
+                Toast.LENGTH_LONG);
+
         toast.show();
     }
 
