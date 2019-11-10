@@ -60,7 +60,7 @@ public class LinesViewModel extends ViewModel {
 
         setLineNoLiveData(line);
 
-        currentDisposable = Observable.interval(15, TimeUnit.SECONDS)
+        currentDisposable = Observable.interval(5, TimeUnit.SECONDS)
                 .flatMap(n -> getLines(line, lineType))
                 .doOnError(error -> Log.d("Error in class " + this.getClass().getName(), error.getMessage()))
                 .subscribe(this::handleResult);
