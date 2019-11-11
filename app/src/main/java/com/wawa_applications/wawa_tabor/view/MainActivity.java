@@ -65,6 +65,16 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getLineNoLiveData().observe(this, lineNo ->
                 mDisplayedLine = lineNo
         );
+
+        viewModel.getIsResult().observe(this, isResult -> {
+            if (!isResult){
+                Toast toast = DynamicToast.makeWarning(this,
+                        "Brak wyszukań dla linii: " + mDisplayedLine.toUpperCase(),
+                        Toast.LENGTH_LONG);
+
+                toast.show();
+            }
+        });
     }
 
     @Override
