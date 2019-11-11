@@ -19,7 +19,7 @@ sonarqube {
         property 'sonar.projectKey', 'wkrzywiec_WaWa-Tabor'
         property 'sonar.host.url', 'https://sonarcloud.io'
         property 'sonar.jacoco.reportPaths', 'build/jacoco/testDebugUnitTest.exec'
-        property 'sonar.coverage.exclusions', '**.MainActivity.*'
+        property 'sonar.coverage.exclusions', "**.MainActivity.*"
     }
 }
 
