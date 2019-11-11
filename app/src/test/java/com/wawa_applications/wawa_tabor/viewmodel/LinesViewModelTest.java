@@ -70,7 +70,7 @@ public class LinesViewModelTest {
 
         //when
         linesViewModel.subscribeBus("180", 1);
-        testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
+        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
         LiveData<List<Line>> transportList = linesViewModel.getLineListLiveData();
 
         //then
@@ -85,11 +85,11 @@ public class LinesViewModelTest {
         //when
         linesViewModel.subscribeBus("180", 1);
 
-        testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
+        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
         LiveData<List<Line>> transportList1 = linesViewModel.getLineListLiveData();
         assertEquals(2, transportList1.getValue().size());
 
-        testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
+        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
         LiveData<List<Line>> transportList2 = linesViewModel.getLineListLiveData();
         assertEquals(3, transportList2.getValue().size());
     }
