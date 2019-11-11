@@ -22,6 +22,7 @@ public class LinesViewModel extends ViewModel {
 
     private MutableLiveData<String> lineNoLiveData;
     private MutableLiveData<List<Line>> lineListLiveData;
+    private MutableLiveData<Boolean> isResult;
     private CompositeDisposable compositeDisposable;
     private Disposable currentDisposable;
     private ZtmApiRepository repository;
@@ -29,6 +30,7 @@ public class LinesViewModel extends ViewModel {
     public LinesViewModel() {
         compositeDisposable = new CompositeDisposable();
         repository = new ZtmApiRepository();
+        isResult = new MutableLiveData<>(true);
     }
 
     public MutableLiveData<String> getLineNoLiveData() {
@@ -41,20 +43,39 @@ public class LinesViewModel extends ViewModel {
         return lineListLiveData;
     }
 
+    public MutableLiveData<Boolean> getIsResult() {
+        return isResult;
+    }
+
+    public int indicateLineType(String lineInput) {
+        String busPattern ="\\d{3}|N\\d{2}";
+        String tramPattern = "\\d{2}";
+
+        lineInput = lineInput.toUpperCase();
+
+        if(lineInput.matches(busPattern)) {
+            return 1;
+        } else if (lineInput.matches(tramPattern)){
+            return 2;
+        } else {
+            return 0;
+        }
+    }
+
     public void subscribeBus(String line, int lineType) {
 
         setLineNoLiveData(line);
 
-        currentDisposable = Observable.interval(15, TimeUnit.SECONDS)
+        currentDisposable = Observable.interval(5, TimeUnit.SECONDS)
                 .flatMap(n -> getLines(line, lineType))
-                .doOnError(error -> Log.d("Error in class " + this.getClass().getName(), error.getMessage()))
+                .doOnError(error -> Log.d("Error: ", error.getMessage()))
                 .subscribe(this::handleResult);
 
         compositeDisposable.add(currentDisposable);
     }
 
     public void unSubscribeBus() {
-        compositeDisposable.dispose();
+        compositeDisposable.remove(currentDisposable);
     }
 
     private Observable<ApiResult> getLines(String line, int lineType) {
@@ -66,9 +87,14 @@ public class LinesViewModel extends ViewModel {
     }
 
     private void handleResult(ApiResult apiResult){
-        Log.i("API Result", apiResult.getLinesList().toString());
         checkIfLineInfoListIsInitiated();
-        lineListLiveData.postValue(apiResult.getLinesList());
+        if (apiResult.getLinesList().size() > 0){
+            isResult.postValue(true);
+            lineListLiveData.postValue(apiResult.getLinesList());
+        } else {
+            isResult.postValue(false);
+            compositeDisposable.remove(currentDisposable);
+        }
     }
 
     private void setLineNoLiveData(String line) {

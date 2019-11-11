@@ -1,50 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:background="@color/main_background_color">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
-    <TextView
-        android:id="@+id/main_title"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:fontFamily="sans-serif"
-        android:text="@string/app_name"
-        android:textColor="@color/text_title_color"
-        android:textSize="50sp"
-        android:textStyle="bold"
-        android:textAlignment="center" />
+        android:layout_margin="40dp"
+        android:hint="@string/textfield_hint"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        app:endIconMode="custom"
+        app:endIconDrawable="@drawable/search"
+        app:boxBackgroundColor="@color/textfield_input_background"
+        app:boxStrokeColor="@color/textfield_border"
+        app:hintTextColor="@color/textfield_border">
 
-    <Button
-        android:id="@+id/buses_button"
-        android:layout_width="250dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="35dp"
-        android:padding="10dp"
-        android:background="@color/buses_button_color"
-        android:onClick="openBusesActivity"
-        android:text="@string/buses_button_text"
-        android:drawableLeft="@drawable/ic_bus"
-        android:textColor="@color/buses_button_text_color"
-        android:textSize="@dimen/button_text_size" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_query"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1"/>
 
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:layout_width="250dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:padding="10dp"
-        android:background="@color/third_button_color"
-        android:onClick="openTramsActivity"
-        android:textSize="@dimen/button_text_size"
-        android:textColor="@color/third_button_text_color"
-        android:text="@string/third_button_text"
-        android:drawableLeft="@drawable/ic_tram"/>
-
-
-</LinearLayout>
+</FrameLayout>

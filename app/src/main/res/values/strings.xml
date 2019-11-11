@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">WaWa Tabor</string>
 
+    <string name="textfield_hint">Numer linii</string>
+
     <string name="button_font_size">20sp</string>
     <string name="buses_button_text">Znajdź autobusy</string>
     <string name="second_button_text">Pobliskie autobusy</string>
@@ -18,11 +20,4 @@
 
     <string name="line_type">line_type</string>
     <string name="line_number">line_number</string>
-
-    <string name="ztm_api_key" templateMergeStrategy="preserve" translatable="false">
-        YOUR API KEY
-    </string>
-    <string name="ztm_api_resource" templateMergeStrategy="preserve" translatable="false">
-        f2e5503e-927d-4ad3-9500-4ab9e55deb59
-    </string>
 </resources>

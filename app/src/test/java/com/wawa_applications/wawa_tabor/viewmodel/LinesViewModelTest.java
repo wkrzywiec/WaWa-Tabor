@@ -70,7 +70,7 @@ public class LinesViewModelTest {
 
         //when
         linesViewModel.subscribeBus("180", 1);
-        testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
+        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
         LiveData<List<Line>> transportList = linesViewModel.getLineListLiveData();
 
         //then
@@ -85,13 +85,58 @@ public class LinesViewModelTest {
         //when
         linesViewModel.subscribeBus("180", 1);
 
-        testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
+        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
         LiveData<List<Line>> transportList1 = linesViewModel.getLineListLiveData();
         assertEquals(2, transportList1.getValue().size());
 
-        testScheduler.advanceTimeBy(15, TimeUnit.SECONDS);
+        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
         LiveData<List<Line>> transportList2 = linesViewModel.getLineListLiveData();
         assertEquals(3, transportList2.getValue().size());
+    }
+
+    @Test
+    public void given180Line_whenIndicateLineType_thenReturn1() {
+        // given & when
+        int lineType = linesViewModel.indicateLineType("180");
+
+        // then
+        assertEquals(1, lineType);
+    }
+
+    @Test
+    public void givenN83Line_whenIndicateLineType_thenReturn1() {
+        // given & when
+        int lineType = linesViewModel.indicateLineType("N83");
+
+        // then
+        assertEquals(1, lineType);
+    }
+
+    @Test
+    public void given17Line_whenIndicateLineType_thenReturn2() {
+        // given & when
+        int lineType = linesViewModel.indicateLineType("17");
+
+        // then
+        assertEquals(2, lineType);
+    }
+
+    @Test
+    public void givenABCLine_whenIndicateLineType_thenReturn0() {
+        // given & when
+        int lineType = linesViewModel.indicateLineType("ABC");
+
+        // then
+        assertEquals(0, lineType);
+    }
+
+    @Test
+    public void givenn83Line_whenIndicateLineType_thenReturn1() {
+        // given & when
+        int lineType = linesViewModel.indicateLineType("n83");
+
+        // then
+        assertEquals(1, lineType);
     }
 
     private void mockZTMResults(String lineNo, int numberOfBuses) {
