@@ -30,6 +30,8 @@ import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.TestScheduler;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -37,7 +39,7 @@ import static org.mockito.Mockito.when;
 public class LinesViewModelTest {
 
     @Mock( name = "repository")
-    private ZtmApiRepository mockedReposiotry;
+    private ZtmApiRepository mockedRepository;
 
     @InjectMocks
     private LinesViewModel linesViewModel;
@@ -52,46 +54,6 @@ public class LinesViewModelTest {
         MockitoAnnotations.initMocks(this);
         testScheduler = new TestScheduler();
         RxJavaPlugins.setComputationSchedulerHandler(scheduler -> testScheduler);
-    }
-
-    @Test
-    public void whenNoBusesAvailable_thenReturnEmptyList() {
-        // when
-        LiveData<List<Line>> transportList = linesViewModel.getLineListLiveData();
-
-        // then
-        assertEquals(0, transportList.getValue().size());
-    }
-
-    @Test
-    public void whenTwoBusesAreAvailable_thenReturnListWithTwoBuses() {
-        //given
-        mockZTMResults("180", 2);
-
-        //when
-        linesViewModel.subscribeToLine("180", 1);
-        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
-        LiveData<List<Line>> transportList = linesViewModel.getLineListLiveData();
-
-        //then
-       assertEquals(2, transportList.getValue().size());
-    }
-
-    @Test
-    public void when2TimesTryToGetBuses_thenReceive2DifferentResultSets() {
-        //given
-        mock2ZTMResults("180", 2, 3);
-
-        //when
-        linesViewModel.subscribeToLine("180", 1);
-
-        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
-        LiveData<List<Line>> transportList1 = linesViewModel.getLineListLiveData();
-        assertEquals(2, transportList1.getValue().size());
-
-        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
-        LiveData<List<Line>> transportList2 = linesViewModel.getLineListLiveData();
-        assertEquals(3, transportList2.getValue().size());
     }
 
     @Test
@@ -139,16 +101,91 @@ public class LinesViewModelTest {
         assertEquals(1, lineType);
     }
 
+    @Test
+    public void whenSubscribeForLine_thenLineNoUpdated() {
+        //given & when
+        linesViewModel.subscribeToLine("180", 1);
+
+        //then
+        assertEquals("180", linesViewModel.getLineNoLiveData().getValue());
+    }
+
+    @Test
+    public void whenNoBusesAvailable_thenReturnEmptyList() {
+        // when
+        LiveData<List<Line>> transportList = linesViewModel.getLineListLiveData();
+
+        // then
+        assertEquals(0, transportList.getValue().size());
+    }
+
+    @Test
+    public void whenTwoBusesAreAvailable_thenReturnListWithTwoBuses() {
+        //given
+        mockZTMResults("180", 2);
+
+        //when
+        linesViewModel.subscribeToLine("180", 1);
+        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
+        LiveData<List<Line>> transportList = linesViewModel.getLineListLiveData();
+
+        //then
+       assertEquals(2, transportList.getValue().size());
+    }
+
+    @Test
+    public void when2TimesTryToGetBuses_thenReceive2DifferentResultSets() {
+        //given
+        mock2ZTMResults("180", 2, 3);
+
+        //when
+        linesViewModel.subscribeToLine("180", 1);
+
+        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
+        LiveData<List<Line>> transportList1 = linesViewModel.getLineListLiveData();
+        assertEquals(2, transportList1.getValue().size());
+
+        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
+        LiveData<List<Line>> transportList2 = linesViewModel.getLineListLiveData();
+        assertEquals(3, transportList2.getValue().size());
+    }
+
+    @Test
+    public void whenSubscribeForLine_thenIsResultTrue() {
+        //given
+        mockZTMResults("180", 2);
+
+        //when
+        linesViewModel.subscribeToLine("180", 1);
+
+        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
+
+        assertTrue(linesViewModel.getIsResult().getValue());
+    }
+
+    @Test
+    public void whenSubscribeForLine_thenIsResultFalse() {
+        //given
+        mockZTMResults("ABC", 0);
+
+        //when
+        linesViewModel.subscribeToLine("ABC", 1);
+
+        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
+
+        assertFalse(linesViewModel.getIsResult().getValue());
+    }
+
     private void mockZTMResults(String lineNo, int numberOfBuses) {
         ApiResult results = createZTMResult(lineNo, numberOfBuses);
-        when(mockedReposiotry.getBuses(any()))
+        when(mockedRepository.getBuses(any()))
                 .thenReturn(Observable.just(results));
     }
 
     private void mock2ZTMResults(String lineNo, int numberOfBuses, int numberOfBuses2) {
         ApiResult results1 = createZTMResult(lineNo, numberOfBuses);
         ApiResult results2 = createZTMResult(lineNo, numberOfBuses2);
-        when(mockedReposiotry.getBuses(any()))
+        when(mockedRepository.getBuses(any()))
                 .thenReturn(Observable.just(results1), Observable.just(results2));
     }
 

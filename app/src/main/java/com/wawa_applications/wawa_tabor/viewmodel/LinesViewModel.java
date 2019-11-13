@@ -1,7 +1,5 @@
 package com.wawa_applications.wawa_tabor.viewmodel;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -68,7 +66,7 @@ public class LinesViewModel extends ViewModel {
 
         currentDisposable = Observable.interval(5, TimeUnit.SECONDS)
                 .flatMap(n -> getLines(line, lineType))
-                .doOnError(error -> Log.d("Error: ", error.getMessage()))
+                .doOnError(error -> new ApiResult())
                 .subscribe(this::handleResult);
 
         compositeDisposable.add(currentDisposable);
