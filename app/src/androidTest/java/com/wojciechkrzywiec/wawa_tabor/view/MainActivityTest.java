@@ -31,7 +31,7 @@ public class MainActivityTest {
 
 
     @Test
-    public void whenSearchForLine_thenGetListOfLines() {
+    public void whenSearchForLine_thenShowLoadingToast() {
 
         //when
         onView(withId(R.id.edit_query))
@@ -39,6 +39,26 @@ public class MainActivityTest {
 
         //then
         onView(withText("Wyszukiwanie pojazdów lini: 180"))
+                .inRoot(withDecorView(not(is(activityRule.getActivity().getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    public void whenSearchForIncorrectLine_thenShowWarningToast() throws InterruptedException {
+
+        //when
+        onView(withId(R.id.edit_query))
+                .perform(typeText("ABC"), pressImeActionButton());
+
+        //then
+        onView(withText("Wyszukiwanie pojazdów lini: ABC"))
+                .inRoot(withDecorView(not(is(activityRule.getActivity().getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+
+        Thread.sleep(5000);
+
+        onView(withText("Brak wyszukań dla linii: ABC"))
                 .inRoot(withDecorView(not(is(activityRule.getActivity().getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
     }
