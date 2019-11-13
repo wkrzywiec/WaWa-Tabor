@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 
 import com.wawa_applications.wawa_tabor.model.Line;
 import com.wawa_applications.wawa_tabor.model.ApiResult;
+import com.wawa_applications.wawa_tabor.model.LineType;
 import com.wawa_applications.wawa_tabor.repository.ZtmApiRepository;
 
 import org.junit.Before;
@@ -104,7 +105,7 @@ public class LinesViewModelTest {
     @Test
     public void whenSubscribeForLine_thenLineNoUpdated() {
         //given & when
-        linesViewModel.subscribeToLine("180", 1);
+        linesViewModel.subscribeToLine("180", LineType.BUS.getValue());
 
         //then
         assertEquals("180", linesViewModel.getLineNoLiveData().getValue());
@@ -120,9 +121,9 @@ public class LinesViewModelTest {
     }
 
     @Test
-    public void whenTwoBusesAreAvailable_thenReturnListWithTwoBuses() {
+    public void when2BusesAreAvailable_thenReturnListWith2Buses() {
         //given
-        mockZTMResults("180", 2);
+        mockZTMResults("180", 2, LineType.BUS.getValue());
 
         //when
         linesViewModel.subscribeToLine("180", 1);
@@ -136,10 +137,10 @@ public class LinesViewModelTest {
     @Test
     public void when2TimesTryToGetBuses_thenReceive2DifferentResultSets() {
         //given
-        mock2ZTMResults("180", 2, 3);
+        mock2ZTMResults("180", 2, 3, LineType.BUS.getValue());
 
         //when
-        linesViewModel.subscribeToLine("180", 1);
+        linesViewModel.subscribeToLine("180", LineType.BUS.getValue());
 
         testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
         LiveData<List<Line>> transportList1 = linesViewModel.getLineListLiveData();
@@ -151,12 +152,26 @@ public class LinesViewModelTest {
     }
 
     @Test
-    public void whenSubscribeForLine_thenIsResultTrue() {
+    public void whenSubscribeForTrams_thenReceive2TramsList() {
         //given
-        mockZTMResults("180", 2);
+        mockZTMResults("18", 2, LineType.TRAM.getValue());
 
         //when
-        linesViewModel.subscribeToLine("180", 1);
+        linesViewModel.subscribeToLine("18", LineType.TRAM.getValue());
+        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
+        LiveData<List<Line>> transportList = linesViewModel.getLineListLiveData();
+
+        //then
+        assertEquals(2, transportList.getValue().size());
+    }
+
+    @Test
+    public void whenSubscribeForLine_thenIsResultTrue() {
+        //given
+        mockZTMResults("180", 2, LineType.BUS.getValue());
+
+        //when
+        linesViewModel.subscribeToLine("180", LineType.BUS.getValue());
 
         testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
 
@@ -167,10 +182,10 @@ public class LinesViewModelTest {
     @Test
     public void whenSubscribeForLine_thenIsResultFalse() {
         //given
-        mockZTMResults("ABC", 0);
+        mockZTMResults("ABC", 0, LineType.BUS.getValue());
 
         //when
-        linesViewModel.subscribeToLine("ABC", 1);
+        linesViewModel.subscribeToLine("ABC", LineType.BUS.getValue());
 
         testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
 
@@ -181,9 +196,9 @@ public class LinesViewModelTest {
     @Test
     public void givenSubscribedForLine_whenUnsubscribe_thenClearLineList() {
         //given
-        mockZTMResults("180", 2);
+            mockZTMResults("180", 2, LineType.BUS.getValue());
 
-        linesViewModel.subscribeToLine("180", 1);
+        linesViewModel.subscribeToLine("180", LineType.BUS.getValue());
 
         testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
         LiveData<List<Line>> transportList1 = linesViewModel.getLineListLiveData();
@@ -196,17 +211,28 @@ public class LinesViewModelTest {
         assertEquals(0, transportList2.getValue().size());
     }
 
-    private void mockZTMResults(String lineNo, int numberOfBuses) {
+    private void mockZTMResults(String lineNo, int numberOfBuses, int type) {
         ApiResult results = createZTMResult(lineNo, numberOfBuses);
-        when(mockedRepository.getBuses(any()))
-                .thenReturn(Observable.just(results));
+        if (LineType.BUS.getValue() == type) {
+            when(mockedRepository.getBuses(any()))
+                    .thenReturn(Observable.just(results));
+        } else {
+            when(mockedRepository.getTrams(any()))
+                    .thenReturn(Observable.just(results));
+        }
     }
 
-    private void mock2ZTMResults(String lineNo, int numberOfBuses, int numberOfBuses2) {
+    private void mock2ZTMResults(String lineNo, int numberOfBuses, int numberOfBuses2, int type) {
         ApiResult results1 = createZTMResult(lineNo, numberOfBuses);
         ApiResult results2 = createZTMResult(lineNo, numberOfBuses2);
-        when(mockedRepository.getBuses(any()))
-                .thenReturn(Observable.just(results1), Observable.just(results2));
+        if (LineType.BUS.getValue() == type) {
+            when(mockedRepository.getBuses(any()))
+                    .thenReturn(Observable.just(results1), Observable.just(results2));
+        } else {
+            when(mockedRepository.getTrams(any()))
+                    .thenReturn(Observable.just(results1), Observable.just(results2));
+        }
+
     }
 
     private ApiResult createZTMResult(String lineNo, int numberOfBuses) {
