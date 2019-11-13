@@ -74,6 +74,7 @@ public class LinesViewModel extends ViewModel {
 
     public void unSubscribeLine() {
         compositeDisposable.remove(currentDisposable);
+        lineListLiveData.postValue(new ArrayList<Line>());
     }
 
     private void setLineNoLiveData(String line) {

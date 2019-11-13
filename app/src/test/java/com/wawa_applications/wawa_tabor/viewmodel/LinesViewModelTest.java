@@ -160,6 +160,7 @@ public class LinesViewModelTest {
 
         testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
 
+        //then
         assertTrue(linesViewModel.getIsResult().getValue());
     }
 
@@ -173,7 +174,26 @@ public class LinesViewModelTest {
 
         testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
 
+        //then
         assertFalse(linesViewModel.getIsResult().getValue());
+    }
+
+    @Test
+    public void givenSubscribedForLine_whenUnsubscribe_thenClearLineList() {
+        //given
+        mockZTMResults("180", 2);
+
+        linesViewModel.subscribeToLine("180", 1);
+
+        testScheduler.advanceTimeBy(5, TimeUnit.SECONDS);
+        LiveData<List<Line>> transportList1 = linesViewModel.getLineListLiveData();
+        assertEquals(2, transportList1.getValue().size());
+
+        //when
+        linesViewModel.unSubscribeLine();
+
+        LiveData<List<Line>> transportList2 = linesViewModel.getLineListLiveData();
+        assertEquals(0, transportList2.getValue().size());
     }
 
     private void mockZTMResults(String lineNo, int numberOfBuses) {
