@@ -62,7 +62,7 @@ public class LinesViewModel extends ViewModel {
         }
     }
 
-    public void subscribeBus(String line, int lineType) {
+    public void subscribeToLine(String line, int lineType) {
 
         setLineNoLiveData(line);
 
@@ -74,8 +74,16 @@ public class LinesViewModel extends ViewModel {
         compositeDisposable.add(currentDisposable);
     }
 
-    public void unSubscribeBus() {
+    public void unSubscribeLine() {
         compositeDisposable.remove(currentDisposable);
+    }
+
+    private void setLineNoLiveData(String line) {
+        checkIfLineNoIsInitiated();
+        if (lineNoLiveData.getValue() != null && !lineNoLiveData.getValue().equals(line)) {
+            compositeDisposable.remove(currentDisposable);
+        }
+        lineNoLiveData.setValue(line);
     }
 
     private Observable<ApiResult> getLines(String line, int lineType) {
@@ -95,15 +103,6 @@ public class LinesViewModel extends ViewModel {
             isResult.postValue(false);
             compositeDisposable.remove(currentDisposable);
         }
-    }
-
-    private void setLineNoLiveData(String line) {
-        checkIfLineNoIsInitiated();
-        if (lineNoLiveData.getValue() != null && !lineNoLiveData.equals(line)) {
-            Log.i("Unsubscribe", "Unsubscribe line: " + lineNoLiveData.getValue());
-            compositeDisposable.remove(currentDisposable);
-        }
-        lineNoLiveData.setValue(line);
     }
 
     private void checkIfLineNoIsInitiated() {

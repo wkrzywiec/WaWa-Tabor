@@ -38,25 +38,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Context mContext = getApplicationContext();
-        Configuration.getInstance().load(mContext, PreferenceManager.getDefaultSharedPreferences(mContext));
-
-        mapView = findViewById(R.id.map);
-        mapHelper = new MapHelper(mapView, mContext);
-        mapHelper.onCreatePrepareMap();
+        initMap();
 
         mLineTextView = findViewById(R.id.edit_query);
         TextInputLayout layout = findViewById(R.id.input_layout);
 
-        layout.setEndIconOnClickListener((textView) -> {
-            setDisplayedLine(textView);
-        });
-
-        mLineTextView.setOnEditorActionListener(
-                (textView, actionID, keyEvent) ->
-                        changeDisplayedLineTextViewOnAction(textView, actionID));
+        setActionListenerForTextView(layout);
 
         viewModel = ViewModelProviders.of(this).get(LinesViewModel.class);
+
         viewModel.getLineListLiveData().observe(this, list -> {
             mapView.getOverlays().clear();
             mapHelper.addLineMarkersOntoMap(list, lineMarkerIcon);
@@ -67,14 +57,22 @@ public class MainActivity extends AppCompatActivity {
         );
 
         viewModel.getIsResult().observe(this, isResult -> {
-            if (!isResult){
-                Toast toast = DynamicToast.makeWarning(this,
-                        "Brak wyszukań dla linii: " + mDisplayedLine.toUpperCase(),
-                        Toast.LENGTH_LONG);
-
-                toast.show();
-            }
+            handleIsResult(isResult);
         });
+    }
+
+    public void setDisplayedLine(View view){
+        closeKeyboard();
+        mDisplayedLine = mLineTextView.getText().toString();
+        lineType = viewModel.indicateLineType(mDisplayedLine);
+        setLineTypeIcon();
+        viewModel.subscribeToLine(mDisplayedLine, lineType);
+
+        Toast toast = DynamicToast.make(this,
+                "Wyszukiwanie pojazdów lini: " + mDisplayedLine.toUpperCase(),
+                Toast.LENGTH_LONG);
+
+        toast.show();
     }
 
     @Override
@@ -87,35 +85,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mapView.onPause();
-        viewModel.unSubscribeBus();
+        viewModel.unSubscribeLine();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        viewModel.unSubscribeBus();
+        viewModel.unSubscribeLine();
     }
 
-    public void setDisplayedLine(View view){
-        closeKeyboard();
-        mDisplayedLine = mLineTextView.getText().toString();
-        lineType = viewModel.indicateLineType(mDisplayedLine);
-        setLineTypeIcon();
-        viewModel.subscribeBus(mDisplayedLine, lineType);
+    private void initMap() {
+        Context mContext = getApplicationContext();
+        Configuration.getInstance().load(mContext, PreferenceManager.getDefaultSharedPreferences(mContext));
 
-        Toast toast = DynamicToast.make(this,
-                "Wyszukiwanie pojazdów lini: " + mDisplayedLine.toUpperCase(),
-                Toast.LENGTH_LONG);
-
-        toast.show();
+        mapView = findViewById(R.id.map);
+        mapHelper = new MapHelper(mapView, mContext);
+        mapHelper.onCreatePrepareMap();
     }
 
-    private void setLineTypeIcon() {
-        if (lineType == 1) {
-            lineMarkerIcon = this.getResources().getDrawable(R.drawable.ic_bus);
-        } else {
-            lineMarkerIcon = this.getResources().getDrawable(R.drawable.ic_tram);
-        }
+    private void setActionListenerForTextView(TextInputLayout layout) {
+        layout.setEndIconOnClickListener((textView) -> {
+            setDisplayedLine(textView);
+        });
+
+        mLineTextView.setOnEditorActionListener(
+                (textView, actionID, keyEvent) ->
+                        changeDisplayedLineTextViewOnAction(textView, actionID));
     }
 
     private void closeKeyboard() {
@@ -126,11 +121,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setLineTypeIcon() {
+        if (lineType == 1) {
+            lineMarkerIcon = this.getResources().getDrawable(R.drawable.ic_bus);
+        } else {
+            lineMarkerIcon = this.getResources().getDrawable(R.drawable.ic_tram);
+        }
+    }
+
     private boolean changeDisplayedLineTextViewOnAction(TextView textView, int actionID) {
         if (actionID == EditorInfo.IME_ACTION_DONE) {
             setDisplayedLine(textView);
             return true;
         }
         return false;
+    }
+
+    private void handleIsResult(Boolean isResult) {
+        if (!isResult){
+            Toast toast = DynamicToast.makeWarning(this,
+                    "Brak wyszukań dla linii: " + mDisplayedLine.toUpperCase(),
+                    Toast.LENGTH_LONG);
+
+            toast.show();
+        }
     }
 }
