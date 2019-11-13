@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.wawa_applications.wawa_tabor.model.ApiResult;
 import com.wawa_applications.wawa_tabor.model.Line;
+import com.wawa_applications.wawa_tabor.model.LineType;
 import com.wawa_applications.wawa_tabor.repository.ZtmApiRepository;
 
 import java.util.ArrayList;
@@ -17,6 +18,9 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
 public class LinesViewModel extends ViewModel {
+
+    private static final String BUS_PATTERN = "\\d{3}|N\\d{2}";
+    private static final String TRAM_PATTERN = "\\d{2}";
 
     private MutableLiveData<String> lineNoLiveData;
     private MutableLiveData<List<Line>> lineListLiveData;
@@ -46,15 +50,13 @@ public class LinesViewModel extends ViewModel {
     }
 
     public int indicateLineType(String lineInput) {
-        String busPattern ="\\d{3}|N\\d{2}";
-        String tramPattern = "\\d{2}";
 
         lineInput = lineInput.toUpperCase();
 
-        if(lineInput.matches(busPattern)) {
-            return 1;
-        } else if (lineInput.matches(tramPattern)){
-            return 2;
+        if(lineInput.matches(BUS_PATTERN)) {
+            return LineType.BUS.getValue();
+        } else if (lineInput.matches(TRAM_PATTERN)){
+            return LineType.TRAM.getValue();
         } else {
             return 0;
         }
@@ -86,7 +88,7 @@ public class LinesViewModel extends ViewModel {
     }
 
     private Observable<ApiResult> getLines(String line, int lineType) {
-        if (lineType == 1){
+        if (lineType == LineType.BUS.getValue()){
             return repository.getBuses(line);
         } else {
             return repository.getTrams(line);

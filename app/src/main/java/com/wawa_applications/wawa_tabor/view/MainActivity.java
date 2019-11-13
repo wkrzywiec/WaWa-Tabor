@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.textfield.TextInputLayout;
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 import com.wawa_applications.wawa_tabor.R;
+import com.wawa_applications.wawa_tabor.model.LineType;
 import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
 
 import org.osmdroid.config.Configuration;
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setLineTypeIcon() {
-        if (lineType == 1) {
+        if (lineType == LineType.BUS.getValue()) {
             lineMarkerIcon = this.getResources().getDrawable(R.drawable.ic_bus);
         } else {
             lineMarkerIcon = this.getResources().getDrawable(R.drawable.ic_tram);
