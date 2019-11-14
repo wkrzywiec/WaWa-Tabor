@@ -19,6 +19,7 @@ import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 import com.wawa_applications.wawa_tabor.R;
 import com.wawa_applications.wawa_tabor.model.LineType;
 import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModel;
+import com.wawa_applications.wawa_tabor.viewmodel.LinesViewModelFactory;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.views.MapView;
@@ -46,7 +47,10 @@ public class MainActivity extends AppCompatActivity {
 
         setActionListenerForTextView(layout);
 
-        viewModel = ViewModelProviders.of(this).get(LinesViewModel.class);
+        viewModel = ViewModelProviders.of(
+                this,
+                new LinesViewModelFactory(this.getString(R.string.ztm_api_key)))
+                .get(LinesViewModel.class);
 
         viewModel.getLineListLiveData().observe(this, list -> {
             mapView.getOverlays().clear();
@@ -57,9 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 mDisplayedLine = lineNo
         );
 
-        viewModel.getIsResult().observe(this, isResult -> {
-            handleIsResult(isResult);
-        });
+        viewModel.getIsResult().observe(this, this::handleIsResult);
     }
 
     public void setDisplayedLine(View view){

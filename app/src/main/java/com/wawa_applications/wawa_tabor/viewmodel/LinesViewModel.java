@@ -29,9 +29,9 @@ public class LinesViewModel extends ViewModel {
     private Disposable currentDisposable;
     private ZtmApiRepository repository;
 
-    public LinesViewModel() {
+    public LinesViewModel(String apiKey) {
         compositeDisposable = new CompositeDisposable();
-        repository = new ZtmApiRepository();
+        repository = new ZtmApiRepository(apiKey);
         isResult = new MutableLiveData<>(true);
     }
 
