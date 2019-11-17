@@ -1,7 +1,6 @@
 package com.wojciechkrzywiec.wawa_tabor.view;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
 import com.wawa_applications.wawa_tabor.R;
@@ -23,12 +22,23 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 
 @RunWith(AndroidJUnit4.class)
-@LargeTest
 public class MainActivityTest {
 
     @Rule
     public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class);
 
+
+    @Test
+    public void whenStartApp_thenDisplayMapView() {
+        onView(withId(R.id.map))
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void whenStartApp_thenDisplayInputYextField() {
+        onView(withId(R.id.input_layout))
+                .check(matches(isDisplayed()));
+    }
 
     @Test
     public void whenSearchForLine_thenShowLoadingToast() {
