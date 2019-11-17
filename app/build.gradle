@@ -8,8 +8,8 @@ android {
         applicationId "com.wawa_applications.wawa_tabor"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 7
-        versionName "1.4.2"
+        versionCode 9
+        versionName "1.5.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testOptions {
             unitTests.returnDefaultValues = true
