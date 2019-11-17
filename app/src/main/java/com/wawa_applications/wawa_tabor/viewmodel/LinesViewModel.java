@@ -1,13 +1,12 @@
 package com.wawa_applications.wawa_tabor.viewmodel;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.wawa_applications.wawa_tabor.model.ApiResult;
 import com.wawa_applications.wawa_tabor.model.Line;
+import com.wawa_applications.wawa_tabor.model.LineType;
 import com.wawa_applications.wawa_tabor.repository.ZtmApiRepository;
 
 import java.util.ArrayList;
@@ -20,6 +19,9 @@ import io.reactivex.disposables.Disposable;
 
 public class LinesViewModel extends ViewModel {
 
+    private static final String BUS_PATTERN = "\\d{3}|N\\d{2}";
+    private static final String TRAM_PATTERN = "\\d{2}";
+
     private MutableLiveData<String> lineNoLiveData;
     private MutableLiveData<List<Line>> lineListLiveData;
     private MutableLiveData<Boolean> isResult;
@@ -27,9 +29,9 @@ public class LinesViewModel extends ViewModel {
     private Disposable currentDisposable;
     private ZtmApiRepository repository;
 
-    public LinesViewModel() {
+    public LinesViewModel(String apiKey) {
         compositeDisposable = new CompositeDisposable();
-        repository = new ZtmApiRepository();
+        repository = new ZtmApiRepository(apiKey);
         isResult = new MutableLiveData<>(true);
     }
 
@@ -48,38 +50,47 @@ public class LinesViewModel extends ViewModel {
     }
 
     public int indicateLineType(String lineInput) {
-        String busPattern ="\\d{3}|N\\d{2}";
-        String tramPattern = "\\d{2}";
 
         lineInput = lineInput.toUpperCase();
 
-        if(lineInput.matches(busPattern)) {
-            return 1;
-        } else if (lineInput.matches(tramPattern)){
-            return 2;
+        if(lineInput.matches(BUS_PATTERN)) {
+            return LineType.BUS.getValue();
+        } else if (lineInput.matches(TRAM_PATTERN)){
+            return LineType.TRAM.getValue();
         } else {
             return 0;
         }
     }
 
-    public void subscribeBus(String line, int lineType) {
+    public void subscribeToLine(String line, int lineType) {
 
         setLineNoLiveData(line);
 
         currentDisposable = Observable.interval(5, TimeUnit.SECONDS)
                 .flatMap(n -> getLines(line, lineType))
-                .doOnError(error -> Log.d("Error: ", error.getMessage()))
+                .doOnError(error -> new ApiResult())
                 .subscribe(this::handleResult);
 
         compositeDisposable.add(currentDisposable);
     }
 
-    public void unSubscribeBus() {
-        compositeDisposable.remove(currentDisposable);
+    public void unSubscribeLine() {
+        if (compositeDisposable.size() > 0) {
+            compositeDisposable.remove(currentDisposable);
+        }
+        lineListLiveData.postValue(new ArrayList<Line>());
+    }
+
+    private void setLineNoLiveData(String line) {
+        checkIfLineNoIsInitiated();
+        if (lineNoLiveData.getValue() != null && !lineNoLiveData.getValue().equals(line)) {
+            compositeDisposable.remove(currentDisposable);
+        }
+        lineNoLiveData.setValue(line);
     }
 
     private Observable<ApiResult> getLines(String line, int lineType) {
-        if (lineType == 1){
+        if (lineType == LineType.BUS.getValue()){
             return repository.getBuses(line);
         } else {
             return repository.getTrams(line);
@@ -95,15 +106,6 @@ public class LinesViewModel extends ViewModel {
             isResult.postValue(false);
             compositeDisposable.remove(currentDisposable);
         }
-    }
-
-    private void setLineNoLiveData(String line) {
-        checkIfLineNoIsInitiated();
-        if (lineNoLiveData.getValue() != null && !lineNoLiveData.equals(line)) {
-            Log.i("Unsubscribe", "Unsubscribe line: " + lineNoLiveData.getValue());
-            compositeDisposable.remove(currentDisposable);
-        }
-        lineNoLiveData.setValue(line);
     }
 
     private void checkIfLineNoIsInitiated() {

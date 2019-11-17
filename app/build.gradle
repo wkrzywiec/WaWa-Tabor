@@ -10,7 +10,7 @@ android {
         targetSdkVersion 29
         versionCode 7
         versionName "1.4.2"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testOptions {
             unitTests.returnDefaultValues = true
         }
@@ -19,6 +19,10 @@ android {
     buildTypes {
         debug {
             testCoverageEnabled = true
+            resValue("string", "ztm_api_key", System.getenv("ZTM_API_KEY").toString())
+        }
+        release {
+            resValue("string", "ztm_api_key", System.getenv("ZTM_API_KEY").toString())
         }
     }
     compileOptions {
@@ -52,6 +56,8 @@ dependencies {
 
     androidTestImplementation 'org.mockito:mockito-android:2.23.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
 }
 
 tasks.matching {it instanceof Test}.all {

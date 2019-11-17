@@ -11,9 +11,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ZtmApiRepository {
 
     private ZtmApiClient apiClient;
-    private final String API_KEY = "";
+    private String apiKey;
 
-    public ZtmApiRepository() {
+    public ZtmApiRepository(String apiKey) {
+        this.apiKey = apiKey;
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ZtmApiClient.URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -23,10 +24,10 @@ public class ZtmApiRepository {
     }
 
     public Observable<ApiResult> getBuses(String lineNo) {
-        return apiClient.getBuses(API_KEY, lineNo);
+        return apiClient.getBuses(apiKey, lineNo);
     }
 
     public Observable<ApiResult> getTrams(String lineNo) {
-        return apiClient.getTrams(API_KEY, lineNo);
+        return apiClient.getTrams(apiKey, lineNo);
     }
 }
