@@ -96,8 +96,4 @@ jobs:
       - name: Run Instrumentation Tests in Firebase Test Lab
         uses: actions/gcloud/cli@master
         with:
-          args: firebase test android run \
-              --type instrumentation \
-              --app app-debug/app-debug.apk \
-              --test app-debug-androidTest/app-debug-androidTest.apk \
-              --device model=Pixel2,version=28,locale=pl,orientation=portrait
+          args: firebase test android run --type instrumentation --app app-debug/app-debug.apk --test app-debug-androidTest/app-debug-androidTest.apk --device model=Pixel2,version=28,locale=pl,orientation=portrait
